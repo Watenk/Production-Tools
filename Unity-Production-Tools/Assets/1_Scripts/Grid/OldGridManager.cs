@@ -10,7 +10,6 @@
 //     public Vector2Int ChunkGridSize { get; private set; } // Size of grid in chunks
 //     public Vector2Int ChunkSize { get; private set; } // Size of 1 chunk
 
-//     private MapGenerator mapGenerator;
 //     private CellGridRenderer gridRenderer;
 //     private List<Vector2Int>[,] changedCells;
 
@@ -79,18 +78,7 @@
 //         return GridSize;
 //     }
 
-//     public Vector2Int GetChunkOrgin(Vector2Int chunkIndex){
-//         return new Vector2Int(Mathf.Abs(chunkIndex.x * ChunkSize.x), Mathf.Abs(chunkIndex.y * ChunkSize.y));
-//     }
 
-//     public Vector2Int CellPosToChunkIndex(Vector2Int cellPos){
-//         return new Vector2Int(Mathf.CeilToInt(cellPos.x / ChunkSize.x), Mathf.CeilToInt(cellPos.y / ChunkSize.y));
-//     }
-
-//     public Vector2Int CellPosToChunkPos(Vector2Int pos){
-//         Vector2Int chunkorgin = GetChunkOrgin(CellPosToChunkIndex(pos));
-//         return new Vector2Int(pos.x - chunkorgin.x, pos.y - chunkorgin.y);
-//     }
 
 //     //--------------------------------------------------------
 
@@ -135,43 +123,5 @@
 //         SetCellType(new Vector2Int((int)mouseScreenToWorldPoint.x, -(int)mouseScreenToWorldPoint.y), CellTypes.vacuum, true);
 //     }
 
-//     private Vector2Int CalcChunkSize(Vector2Int gridSize, Vector2Int desiredChunkSize){
-        
-//         if (gridSize.x < desiredChunkSize.x || gridSize.y < desiredChunkSize.y) { Debug.LogError("GridSize is smaller than ChunkSize"); }
-//         int xChunkSize = FindClosestDivisor(gridSize.x, desiredChunkSize.x);
-//         int yChunkSize = FindClosestDivisor(gridSize.y, desiredChunkSize.y);
 
-//         return new Vector2Int(xChunkSize, yChunkSize);
-//     }
-
-//     private int FindClosestDivisor(int number, int devisor){
-
-//         int maxTries = 1000;
-//         int remainder = 1;
-//         int maxDivisorOffset = 0;
-//         int minDivisorOffset = 0;
-
-//         if (devisor > number) { Debug.LogError("Devisor: " + devisor + " is bigger than number: " + number); }
-//         if (devisor <= 0) { Debug.LogError("Devisor is <= 0"); }
-
-//         for (int i = 0; i < maxTries; i++){
-//             // Check max offset
-//             if (devisor + maxDivisorOffset < number){
-//                 remainder = number % (devisor + maxDivisorOffset);
-//                 if (remainder == 0) { return devisor + maxDivisorOffset; }
-//                 else { maxDivisorOffset++; }
-//             }
-
-
-//             // Check min offset
-//             if (devisor - minDivisorOffset > 0) {  
-//                 remainder = number % (devisor - minDivisorOffset);
-//                 if (remainder == 0) { return devisor - minDivisorOffset; }
-//                 else { minDivisorOffset++; }
-//             }
-//         }
-
-//         Debug.LogError("Couldn't find a divisor for (Number: " + number + ", Devisor: " + devisor + ")");
-//         return 0;
-//     }
 // }

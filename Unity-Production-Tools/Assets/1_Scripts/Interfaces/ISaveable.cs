@@ -4,6 +4,6 @@ using UnityEngine;
 
 public interface ISaveable
 {
-    public SaveChunk Save();
-    public void Load();
+    public void Save(SaveFile saveFile);
+    public void Load(SaveFile saveFile);
 }

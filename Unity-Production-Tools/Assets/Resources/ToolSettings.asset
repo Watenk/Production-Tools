@@ -13,3 +13,6 @@ MonoBehaviour:
   m_Name: ToolSettings
   m_EditorClassIdentifier: 
   DesiredMeshChunkSize: {x: 128, y: 128}
+  MaxCamSize: 1000
+  MinCamSize: 1
+  ScrollSpeed: 5

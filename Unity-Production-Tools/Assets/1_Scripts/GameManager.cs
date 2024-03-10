@@ -15,8 +15,10 @@ public class GameManager : MonoBehaviour
     public void Awake(){
         Instance = this;
 
+        AddService(new InputHandler());
         AddService(new SaveManager());
         AddService(new CanvasManager());
+        AddService(new CameraController());
     }
 
     public void Update(){

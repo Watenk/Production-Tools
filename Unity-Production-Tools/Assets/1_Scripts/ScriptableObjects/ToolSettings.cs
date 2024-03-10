@@ -21,5 +21,11 @@ public class ToolSettings : ScriptableObject
 
     //------------------------------------------------------------------
 
+    [Header("Rendering")]
     public Vector2Int DesiredMeshChunkSize;
+
+    [Header("Input")]
+    public float MaxCamSize;
+    public float MinCamSize;
+    public float ScrollSpeed;
 }

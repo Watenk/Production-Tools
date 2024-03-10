@@ -23,6 +23,7 @@ public class Canvas : Saveable
         #endif
 
         meshChunkSize = CalcChunkSize(desiredMeshChunkSize);
+        Debug.Log(meshChunkSize);
         AddLayer();
     }
 

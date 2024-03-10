@@ -45,7 +45,7 @@ public class LayerRenderer
         GameObject gameObject = new GameObject();
         gameObject.transform.SetParent(GameManager.Instance.gameObject.transform);
         gameObject.transform.position = new Vector3(pos.x, pos.y, 0);
-        gameObject.transform.name = "MeshChunk (" + pos.x + ", " + pos.y + ")";
+        gameObject.transform.name = "MeshChunk (" + pos.x / meshChunkSize.x + ", " + pos.y / meshChunkSize.y + ")";
         gameObject.isStatic = true;
 
         // Mesh

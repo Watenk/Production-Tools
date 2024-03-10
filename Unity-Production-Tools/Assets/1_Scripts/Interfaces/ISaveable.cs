@@ -4,6 +4,6 @@ using UnityEngine;
 
 public interface ISaveable
 {
-    public void Save(SaveFile saveFile);
-    public void Load(SaveFile saveFile);
+    public void Save(CanvasSaveFile saveFile);
+    public void Load(CanvasSaveFile saveFile);
 }

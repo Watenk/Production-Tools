@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
         Instance = this;
 
         AddService(new SaveManager());
+        AddService(new CanvasManager());
     }
 
     public void Update(){

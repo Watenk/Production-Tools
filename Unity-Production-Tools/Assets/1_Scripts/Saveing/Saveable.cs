@@ -8,11 +8,11 @@ public class Saveable : ISaveable
         GameManager.GetService<SaveManager>().AddSaveable(this);
     }
 
-    public virtual void Load(SaveFile saveFile){
+    public virtual void Load(CanvasSaveFile saveFile){
 
     }
 
-    public virtual void Save(SaveFile saveFile){
+    public virtual void Save(CanvasSaveFile saveFile){
 
     }
 }

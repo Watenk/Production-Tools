@@ -21,4 +21,5 @@ public class ToolSettings : ScriptableObject
 
     //------------------------------------------------------------------
 
+    public Vector2Int DesiredMeshChunkSize;
 }

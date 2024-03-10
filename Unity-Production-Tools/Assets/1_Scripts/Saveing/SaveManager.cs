@@ -7,22 +7,26 @@ using System;
 
 public class SaveManager
 {
-    public SaveFile SaveFile { get; private set; }
-
     private List<Saveable> saveables = new List<Saveable>();
 
     //-------------------------------------------------
 
-    public void Save(){
+    public void Save(string fileName){
         
+        CanvasSaveFile saveFile = new CanvasSaveFile();
+
         foreach (Saveable currentSaveable in saveables){
-            currentSaveable.Save(SaveFile);
+            currentSaveable.Save(saveFile);
         }
 
-        StreamWriter writer = new StreamWriter(GetPath(), true);
-        writer.WriteLine(JsonUtility.ToJson(SaveFile, true));
+        StreamWriter writer = new StreamWriter(GetPath(fileName), true);
+        writer.WriteLine(JsonUtility.ToJson(saveFile, true));
         writer.Close();
         writer.Dispose();
+    }
+
+    public void Load(string fileName){
+
     }
 
     public void AddSaveable(Saveable saveable){
@@ -31,12 +35,12 @@ public class SaveManager
 
     //----------------------------------------------------
 
-    private string GetPath(){
+    private string GetPath(string fileName){
         if (Application.isEditor){
-            return Application.dataPath + "Save" + ".txt";
+            return Application.dataPath + fileName + ".txt";
         }
         else{
-            return Application.persistentDataPath + "Save" + ".txt";
+            return Application.persistentDataPath + fileName + ".txt";
         }
     }
 }

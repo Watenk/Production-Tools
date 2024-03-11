@@ -10,7 +10,7 @@ public class CanvasManager
     //----------------------------------------------
 
     public CanvasManager(){
-        AddCanvas(a4);
+        AddCanvas(new Vector2Int(32, 32));
     }
 
     public void AddCanvas(Vector2Int size){

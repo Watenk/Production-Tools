@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 426152bab163ef340aaafbcff1b93be3, type: 3}
   m_Name: ToolSettings
   m_EditorClassIdentifier: 
-  DesiredMeshChunkSize: {x: 128, y: 128}
+  MeshChunkSize: {x: 128, y: 128}
+  RenderMaterial: {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
   MaxCamSize: 1000
   MinCamSize: 1
   ScrollSpeed: 5

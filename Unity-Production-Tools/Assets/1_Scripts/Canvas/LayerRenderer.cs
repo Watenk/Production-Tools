@@ -5,22 +5,26 @@ using UnityEngine;
 public class LayerRenderer
 {
     private MeshRenderer[,] meshRenderers;
-    private Vector2Int meshRenderersArraySize;
+    private Vector2Int meshChunksSize;
     private Vector2Int meshChunkSize;
-    private Material unlitMaterial;
+    private Material renderMaterial;
 
     // References
     private Layer layer;
 
     //-------------------------------------------------
 
-    public LayerRenderer(Layer layer, Vector2Int meshChunkSize){
+    public LayerRenderer(Layer layer){
         this.layer = layer;
-        this.meshChunkSize = meshChunkSize;
-        unlitMaterial = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+        meshChunkSize = ToolSettings.Instance.MeshChunkSize;
+        renderMaterial = ToolSettings.Instance.RenderMaterial;
 
-        meshRenderersArraySize = new Vector2Int(layer.GetSize().x / meshChunkSize.x, layer.GetSize().y / meshChunkSize.y);
-        meshRenderers = new MeshRenderer[meshRenderersArraySize.x, meshRenderersArraySize.y];
+        #if UNITY_EDITOR
+            if (meshChunkSize.x == 0 || meshChunkSize.y == 0) { Debug.LogError("DesiredMeshChunkSize in ToolSettings is 0"); }
+        #endif
+
+        meshChunksSize = new Vector2Int(layer.GetSize().x / meshChunkSize.x + 1, layer.GetSize().y / meshChunkSize.y + 1);
+        meshRenderers = new MeshRenderer[meshChunksSize.x, meshChunksSize.y];
 
         GenerateCanvas();
     }
@@ -32,8 +36,8 @@ public class LayerRenderer
     //--------------------------------------------------
 
     private void GenerateCanvas(){
-        for (int y = 0; y < meshRenderersArraySize.y; y++){
-            for (int x = 0; x < meshRenderersArraySize.x; x++){
+        for (int y = 0; y < meshChunksSize.y; y++){
+            for (int x = 0; x < meshChunksSize.x; x++){
                 GenerateMesh(meshChunkSize, new Vector2Int(x * meshChunkSize.x, y * meshChunkSize.y));
             }
         }
@@ -52,7 +56,7 @@ public class LayerRenderer
         MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
         MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
         meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-        meshRenderer.material = unlitMaterial;
+        meshRenderer.material = renderMaterial;
         Mesh mesh = new Mesh();
 
         // Create data arrays
@@ -70,18 +74,26 @@ public class LayerRenderer
                 // Vertices
                 // This generates 4 vertices clockwise because a quad had 4 vertices
                 // Vertices start rendering from the bottom left
-                verticeIndex = index * 4; // 
+                verticeIndex = index * 4; 
                 vertices[verticeIndex + 0] = new Vector3(x    , -y    , 0);
                 vertices[verticeIndex + 1] = new Vector3(x    , -y + 1, 0);
                 vertices[verticeIndex + 2] = new Vector3(x + 1, -y + 1, 0);
                 vertices[verticeIndex + 3] = new Vector3(x + 1, -y    , 0);
 
                 // Vertex Colors
-                Cell currentCell = layer.GetCell(new Vector2Int(x, y));
-                vertexColors[verticeIndex + 0] = new Color(currentCell.Red / 255.0f, currentCell.Green / 255.0f, currentCell.Blue / 255.0f, currentCell.Alpha);
-                vertexColors[verticeIndex + 1] = new Color(currentCell.Red / 255.0f, currentCell.Green / 255.0f, currentCell.Blue / 255.0f, currentCell.Alpha);
-                vertexColors[verticeIndex + 2] = new Color(currentCell.Red / 255.0f, currentCell.Green / 255.0f, currentCell.Blue / 255.0f, currentCell.Alpha);
-                vertexColors[verticeIndex + 3] = new Color(currentCell.Red / 255.0f, currentCell.Green / 255.0f, currentCell.Blue / 255.0f, currentCell.Alpha);
+                Cell currentCell = layer.GetCell(new Vector2Int(pos.x + x, pos.y + y));
+                if (currentCell != null){
+                    vertexColors[verticeIndex + 0] = new Color(currentCell.Red / 255.0f, currentCell.Green / 255.0f, currentCell.Blue / 255.0f, currentCell.Alpha);
+                    vertexColors[verticeIndex + 1] = new Color(currentCell.Red / 255.0f, currentCell.Green / 255.0f, currentCell.Blue / 255.0f, currentCell.Alpha);
+                    vertexColors[verticeIndex + 2] = new Color(currentCell.Red / 255.0f, currentCell.Green / 255.0f, currentCell.Blue / 255.0f, currentCell.Alpha);
+                    vertexColors[verticeIndex + 3] = new Color(currentCell.Red / 255.0f, currentCell.Green / 255.0f, currentCell.Blue / 255.0f, currentCell.Alpha);
+                }
+                else{
+                    vertexColors[verticeIndex + 0] = Color.clear;
+                    vertexColors[verticeIndex + 1] = Color.clear;
+                    vertexColors[verticeIndex + 2] = Color.clear;
+                    vertexColors[verticeIndex + 3] = Color.clear;
+                }
 
                 // Triangles
                 // This assigns the order the vertices are connected
@@ -95,18 +107,16 @@ public class LayerRenderer
                 triangles[triangleIndex + 4] = verticeIndex + 2;
                 triangles[triangleIndex + 5] = verticeIndex + 3;
 
+
                 index++;
             }
         }
 
         mesh.vertices = vertices;
         mesh.triangles = triangles;
+        mesh.colors = vertexColors;
 
         meshFilter.gameObject.transform.position = new Vector3(pos.x, -pos.y - 1, 0);
         meshFilter.mesh = mesh;
-    }
-
-    private void NormalizeColor(){
-
     }
 }

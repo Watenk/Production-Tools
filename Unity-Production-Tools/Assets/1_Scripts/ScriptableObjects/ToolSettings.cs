@@ -22,7 +22,8 @@ public class ToolSettings : ScriptableObject
     //------------------------------------------------------------------
 
     [Header("Rendering")]
-    public Vector2Int DesiredMeshChunkSize;
+    public Vector2Int MeshChunkSize;
+    public Material RenderMaterial;
 
     [Header("Input")]
     public float MaxCamSize;

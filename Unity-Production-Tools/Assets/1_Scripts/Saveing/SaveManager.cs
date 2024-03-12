@@ -19,14 +19,18 @@ public class SaveManager
             currentSaveable.Save(saveFile);
         }
 
-        StreamWriter writer = new StreamWriter(GetPath(fileName), true);
+        Directory.CreateDirectory(GetPath() + "/saves/" + fileName);
+        StreamWriter writer = new StreamWriter(GetPath() + "/saves/" + fileName + "/" + fileName +".txt", false);
         writer.WriteLine(JsonUtility.ToJson(saveFile, true));
         writer.Close();
         writer.Dispose();
+
+        Debug.Log("Saved " + saveables.Count + " objects to " + GetPath() + "/saves/" + fileName + "/" + fileName + ".txt");
     }
 
     public void Load(string fileName){
 
+        Debug.Log("Loaded");
     }
 
     public void AddSaveable(Saveable saveable){
@@ -34,13 +38,13 @@ public class SaveManager
     }
 
     //----------------------------------------------------
-
-    private string GetPath(string fileName){
+    
+    private string GetPath(){
         if (Application.isEditor){
-            return Application.dataPath + fileName + ".txt";
+            return Application.dataPath;
         }
         else{
-            return Application.persistentDataPath + fileName + ".txt";
+            return Application.persistentDataPath;
         }
     }
 }

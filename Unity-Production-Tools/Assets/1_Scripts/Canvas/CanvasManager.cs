@@ -2,26 +2,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CanvasManager
+public class CanvasManager : IUpdateable
 {
     private List<Canvas> canvases = new List<Canvas>();
+    private Canvas selectedCanvas;
+
     private Vector2Int a4 = new Vector2Int(2480, 3508);
 
     //----------------------------------------------
 
     public CanvasManager(){
-        AddCanvas(new Vector2Int(32, 32));
+        AddCanvas(a4);
+        GameManager.GetService<SaveManager>().Save("test");
+
+        SetPixel(new Vector2Int(2, 2), Color.red);
+    }
+
+    public void OnUpdate(){
+        foreach (Canvas current in canvases){
+            current.OnUpdate();
+        }
     }
 
     public void AddCanvas(Vector2Int size){
-        canvases.Add(new Canvas(size));
+        Canvas newCanvas = new Canvas("New Canvas", size);
+        selectedCanvas = newCanvas;
+        canvases.Add(newCanvas);
     }
-
-    public void SaveCanvas(string name){
-
-    }
-
-    public void LoadCanvas(string name){
-
+    
+    public void SetPixel(Vector2Int pos, Color color){
+        selectedCanvas.SetPixel(pos, color);
     }
 }

@@ -1,43 +1,124 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using UnityEditor;
 using UnityEngine;
 
-public class Layer
+[Serializable]
+public class Layer : IUpdateable
 {
-    private string name;
-    private int index;
-    public Vector2Int size;
-    public Cell[,] cells;
+    [SerializeField] private Texture2D texture;
+    [SerializeField] private Vector2Int size;
+    [SerializeField] private string name;
+    [SerializeField] private int index;
 
-    //-----------------------------------
+    private List<ColorPixel> updatedPixels = new List<ColorPixel>();
 
-    public Layer(Vector2Int size, int index){
+    //--------------------------------------------------
+
+    public Layer(string name, Vector2Int size, int index){
+
+        this.name = name;
         this.size = size;
         this.index = index;
 
-        cells = new Cell[size.x, size.y];
-        for (int y = 0; y < size.y; y++){
-            for (int x = 0; x < size.x; x++){
-                cells[x,y] = new Cell();
-            }
-        }
+        texture = new Texture2D(size.x, size.y)
+        {
+            filterMode = FilterMode.Point,
+        };
+
+        GenerateQuad();
+    }
+
+    public void OnUpdate(){
+        UpdateTexture();
     }
 
     public Vector2Int GetSize(){
         return size;
     }
 
-    public Cell GetCell(Vector2Int pos){
-        if (!IsInLayerBounds(pos)) { return null; }
+    public Color GetPixel(Vector2Int pos){
+        if (!IsInLayerBounds(pos)) { return default; }
 
-        return cells[pos.x, pos.y];
+        return texture.GetPixel(pos.x, pos.y);
+    }
+
+    public void SetPixel(Vector2Int pos, Color color){
+        if (!IsInLayerBounds(pos)) { return; }
+
+        updatedPixels.Add(new ColorPixel(new Vector2Int(pos.x, size.y - pos.y - 1), color));
     }
 
     public bool IsInLayerBounds(Vector2Int pos){
         if (pos.x < 0 || pos.x >= size.x) { return false; }
         if (pos.y < 0 || pos.y >= size.y) { return false; }
         return true;
+    }
+
+    //---------------------------------------------
+
+    private void UpdateTexture(){
+
+        if (updatedPixels.Count == 0) { return; }
+
+        //TODO: improve performance
+        foreach (ColorPixel current in updatedPixels){
+            texture.SetPixel(current.pos.x, current.pos.y, current.color);
+        }
+
+        updatedPixels.Clear();
+        texture.Apply();
+    }
+
+    private void GenerateQuad(){
+
+        // GameObject
+        GameObject gameObject = new GameObject("Layer");
+        gameObject.transform.SetParent(GameManager.Instance.gameObject.transform);
+        gameObject.transform.position = Vector3.zero;
+        gameObject.isStatic = true;
+
+        // Mesh
+        Mesh mesh = new Mesh();
+        MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
+        MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
+        meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        Material material = new Material(Shader.Find("Unlit/Transparent"));
+        material.mainTexture = texture;
+        meshRenderer.material = material;
+
+        // Create data arrays
+        Vector3[] vertices = new Vector3[4]; // Points in the grid (4 because a quad has 4 vertices)
+        Vector2[] uv = new Vector2[4];
+        int[] triangles = new int[6]; // Defines the index of the vertices (6 because a quad had 6 sides (2 triangles))
+
+        // Vertices from the bottom left, couterclockwise
+        vertices[0] = new Vector3(0, 0, 0);
+        vertices[1] = new Vector3(size.x, 0, 0);
+        vertices[2] = new Vector3(0, size.y, 0);
+        vertices[3] = new Vector3(size.x, size.y, 0);
+
+        // Triangle 1
+        triangles[0] = 0;
+        triangles[1] = 2;
+        triangles[2] = 1;
+        // Triangle 2
+        triangles[3] = 2;
+        triangles[4] = 3;
+        triangles[5] = 1;
+
+        // UV
+        uv[0] = new Vector2(0, 0);
+        uv[1] = new Vector2(1, 0);
+        uv[2] = new Vector2(0, 1);
+        uv[3] = new Vector2(1, 1);
+
+        mesh.vertices = vertices;
+        mesh.triangles = triangles;
+        mesh.uv = uv;
+
+        meshFilter.mesh = mesh;
     }
 }

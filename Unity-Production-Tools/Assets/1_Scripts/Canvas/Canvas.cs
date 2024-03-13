@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Canvas : ISaveable, IUpdateable
+public class Canvas : IUpdateable
 {
     public Vector2Int Size { get; private set; }
 
+    private string saveLocation;
     private string name;
     private Dictionary<int, Layer> layers = new Dictionary<int, Layer>();
     private Layer currentLayer;
@@ -39,6 +40,7 @@ public class Canvas : ISaveable, IUpdateable
         name = saveFile.Name;
         Size = saveFile.Size;
         layers = saveFile.Layers;
+        saveLocation = saveFile.SaveLocation;
     }
 
     public void AddLayer(){

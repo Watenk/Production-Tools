@@ -1,8 +1,0 @@
-{
-    "Name": "New Canvas",
-    "Size": {
-        "x": 2480,
-        "y": 3508
-    },
-    "LayerCount": 1
-}

@@ -6,6 +6,7 @@ using UnityEngine;
 [Serializable]
 public class CanvasSaveFile
 {
+    public string SaveLocation;
     public string Name;
     public Vector2Int Size;
     public Dictionary<int, Layer> Layers = new Dictionary<int, Layer>();

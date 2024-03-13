@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    private static Dictionary<System.Type, System.Object> services = new Dictionary<System.Type, object>();
+    private static Dictionary<System.Type, object> services = new Dictionary<System.Type, object>();
     private static List<IUpdateable> updateables = new List<IUpdateable>();
     private static List<IFixedUpdateable> fixedUpdateables = new List<IFixedUpdateable>();
 
@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
     }
 
     public static T GetService<T>(){
-        services.TryGetValue(typeof(T), out System.Object service);
+        services.TryGetValue(typeof(T), out object service);
 
         #if UNITY_EDITOR
             if (service == null) { Debug.LogError(typeof(T).Name + " Sevice not found"); }

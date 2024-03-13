@@ -4,17 +4,5 @@
         "x": 2480,
         "y": 3508
     },
-    "Layers": [
-        {
-            "texture": {
-                "instanceID": -4270
-            },
-            "size": {
-                "x": 2480,
-                "y": 3508
-            },
-            "name": "New Layer",
-            "index": 0
-        }
-    ]
+    "LayerCount": 1
 }

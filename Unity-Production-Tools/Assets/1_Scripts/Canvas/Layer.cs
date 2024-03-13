@@ -8,12 +8,13 @@ using UnityEngine;
 [Serializable]
 public class Layer : IUpdateable
 {
-    [SerializeField] private Texture2D texture;
+    [SerializeField] public Texture2D Texture { get; private set; }
     [SerializeField] private Vector2Int size;
     [SerializeField] private string name;
     [SerializeField] private int index;
 
     private List<ColorPixel> updatedPixels = new List<ColorPixel>();
+    private GameObject gameObject;
 
     //--------------------------------------------------
 
@@ -23,10 +24,18 @@ public class Layer : IUpdateable
         this.size = size;
         this.index = index;
 
-        texture = new Texture2D(size.x, size.y)
+        Texture = new Texture2D(size.x, size.y)
         {
             filterMode = FilterMode.Point,
         };
+
+        GenerateQuad();
+    }
+
+    public Layer(Texture2D texture, int index){
+
+        Texture = texture;
+        this.index = index;
 
         GenerateQuad();
     }
@@ -42,7 +51,7 @@ public class Layer : IUpdateable
     public Color GetPixel(Vector2Int pos){
         if (!IsInLayerBounds(pos)) { return default; }
 
-        return texture.GetPixel(pos.x, pos.y);
+        return Texture.GetPixel(pos.x, pos.y);
     }
 
     public void SetPixel(Vector2Int pos, Color color){
@@ -57,6 +66,10 @@ public class Layer : IUpdateable
         return true;
     }
 
+    public void Clear(){
+        GameObject.Destroy(this.gameObject);
+    }
+
     //---------------------------------------------
 
     private void UpdateTexture(){
@@ -65,17 +78,17 @@ public class Layer : IUpdateable
 
         //TODO: improve performance
         foreach (ColorPixel current in updatedPixels){
-            texture.SetPixel(current.pos.x, current.pos.y, current.color);
+            Texture.SetPixel(current.pos.x, current.pos.y, current.color);
         }
 
         updatedPixels.Clear();
-        texture.Apply();
+        Texture.Apply();
     }
 
     private void GenerateQuad(){
 
         // GameObject
-        GameObject gameObject = new GameObject("Layer");
+        gameObject = new GameObject("Layer");
         gameObject.transform.SetParent(GameManager.Instance.gameObject.transform);
         gameObject.transform.position = Vector3.zero;
         gameObject.isStatic = true;
@@ -86,7 +99,7 @@ public class Layer : IUpdateable
         MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
         meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         Material material = new Material(Shader.Find("Unlit/Transparent"));
-        material.mainTexture = texture;
+        material.mainTexture = Texture;
         meshRenderer.material = material;
 
         // Create data arrays

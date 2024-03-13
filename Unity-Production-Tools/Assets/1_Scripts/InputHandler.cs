@@ -14,6 +14,7 @@ public class InputHandler : IUpdateable
     public event Action OnMiddleMouseUp;
     public event Action OnMousePosChange;
     public event Action<float> OnMouseScroll;
+    public event Action OnSpaceDown;
 
     private Vector2 previousMousePos;
 
@@ -33,6 +34,7 @@ public class InputHandler : IUpdateable
         if (Input.GetKeyUp(KeyCode.Mouse1) && OnRightMouseUp != null) { OnRightMouseUp(); }
         if (Input.GetKeyDown(KeyCode.Mouse2) && OnMiddleMouseDown != null) { OnMiddleMouseDown(); }
         if (Input.GetKeyUp(KeyCode.Mouse2) && OnMiddleMouseUp != null) { OnMiddleMouseUp(); }
+        if (Input.GetKeyDown(KeyCode.Space) && OnSpaceDown != null) { OnSpaceDown(); }
 
         if (Input.mouseScrollDelta.y != 0) { OnMouseScroll(Input.mouseScrollDelta.y); }
         

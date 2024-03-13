@@ -8,5 +8,6 @@ public class CanvasSaveFile
 {
     public string Name;
     public Vector2Int Size;
-    public List<Layer> Layers = new List<Layer>();
+    public Dictionary<int, Layer> Layers = new Dictionary<int, Layer>();
+    public int LayerCount;
 }

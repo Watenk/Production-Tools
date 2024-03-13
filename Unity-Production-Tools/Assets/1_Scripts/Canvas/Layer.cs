@@ -32,10 +32,13 @@ public class Layer : IUpdateable
         GenerateQuad();
     }
 
-    public Layer(Texture2D texture, int index){
+    public Layer(Texture2D texture, Vector2Int size, int index){
 
         Texture = texture;
+        this.size = size;
         this.index = index;
+        
+        Texture.filterMode = FilterMode.Point;
 
         GenerateQuad();
     }

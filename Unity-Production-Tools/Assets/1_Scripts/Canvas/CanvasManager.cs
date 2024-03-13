@@ -27,8 +27,6 @@ public class CanvasManager : IUpdateable
         inputHandler.OnSpaceDown += OnSpaceDown;
 
         AddCanvas(a4);
-
-        SetPixel(new Vector2Int(2, 2), Color.red);
     }
 
     public void OnUpdate(){
@@ -56,10 +54,10 @@ public class CanvasManager : IUpdateable
     }
 
     private void OnRightMouseDown(){
-        saveManager.Save("test");
+        saveManager.Save();
     }
 
     private void OnSpaceDown(){
-        saveManager.Load("test");
+        saveManager.Load();
     }
 }

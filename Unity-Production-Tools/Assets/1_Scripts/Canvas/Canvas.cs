@@ -31,6 +31,7 @@ public class Canvas : IUpdateable
         saveFile.Size = Size;
         saveFile.Layers = layers;
         saveFile.LayerCount = layers.Count;
+        saveFile.SaveLocation = saveLocation;
     }
 
     public void Load(CanvasSaveFile saveFile){
@@ -41,6 +42,7 @@ public class Canvas : IUpdateable
         Size = saveFile.Size;
         layers = saveFile.Layers;
         saveLocation = saveFile.SaveLocation;
+        currentLayer = saveFile.Layers[0];
     }
 
     public void AddLayer(){
@@ -57,5 +59,6 @@ public class Canvas : IUpdateable
         foreach (var current in layers){
             current.Value.Clear();
         }
+        layers.Clear();
     }
 }

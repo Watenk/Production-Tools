@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class CanvasSaveFile
+public struct CanvasSaveFile
 {
     public string SaveLocation;
     public string Name;
     public Vector2Int Size;
-    public Dictionary<int, Layer> Layers = new Dictionary<int, Layer>();
+    public Dictionary<int, Layer> Layers;
     public int LayerCount;
 }

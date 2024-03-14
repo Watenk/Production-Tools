@@ -5,23 +5,20 @@ using System;
 using UnityEngine;
 using SFB;
 
-public class SaveManager
+public static class SaveManager
 {
-
-    //-------------------------------------------------
-
-    public void Save(){
+    public static void Save(Canvas canvas){
         
-        // Get App Data
+        // Generate SaveFile
         CanvasSaveFile saveFile = new CanvasSaveFile();
-        GameManager.GetService<CanvasManager>().CurrentCanvas.Save(saveFile);
+        canvas.SaveTo(saveFile);
 
         // Get Save Location (if neccecary)
         if (saveFile.SaveLocation == null){
-            GenerateSaveDir(saveFile);
+            GenerateSaveDirFor(saveFile);
         }
         if (!Directory.Exists(saveFile.SaveLocation)){
-            GenerateSaveDir(saveFile);
+            GenerateSaveDirFor(saveFile);
         }
 
         // Write Data Json
@@ -39,37 +36,37 @@ public class SaveManager
         Debug.Log("Saved " + saveFile.Name + " to " + saveFile.SaveLocation);
     }
 
-    public void Load(){
+    public static Canvas Load(){
 
-        // Get Save
+        // Get SaveLocation
         string[] savePaths = StandaloneFileBrowser.OpenFolderPanel("", "", false);
-        if (savePaths.Length == 0) { Debug.LogWarning("Load Failed... Couldn't find specified dir"); return; }
+        if (savePaths.Length == 0) { Debug.LogWarning("Load Failed... Couldn't find specified dir"); return null; }
         string savePath = savePaths[0];
 
         // Read Data Json
-        if (!File.Exists(savePath + "/data.txt")) { Debug.LogWarning("Load Failed... Couldn't find " + savePath + "/data.txt"); return; }
+        if (!File.Exists(savePath + "/data.txt")) { Debug.LogWarning("Load Failed... Couldn't find " + savePath + "/data.txt"); return null; }
         string json = File.ReadAllText(savePath + "/data.txt");
         CanvasSaveFile saveFile = JsonUtility.FromJson<CanvasSaveFile>(json);
+        saveFile.Layers = new Dictionary<int, Layer>();
 
         // Read Layers PNG's
-        if (!Directory.Exists(savePath + "/layers")) { Debug.LogWarning("Load Failed... Couldn't find " + savePath + "/layers"); return; }
+        if (!Directory.Exists(savePath + "/layers")) { Debug.LogWarning("Load Failed... Couldn't find " + savePath + "/layers"); return null; }
         for (int i = 0; i < saveFile.LayerCount; i++){
-            if (!File.Exists(savePath + "/data.txt")) { Debug.LogWarning("Load Failed... Couldn't find " + savePath + "/layers/" + i + ".png"); return; }
+            if (!File.Exists(savePath + "/data.txt")) { Debug.LogWarning("Load Failed... Couldn't find " + savePath + "/layers/" + i + ".png"); return null; }
             Texture2D texture = new Texture2D(saveFile.Size.x, saveFile.Size.y);
             byte[] layerData = File.ReadAllBytes(savePath + "/layers/" + i.ToString() + ".png");
             texture.LoadImage(layerData);
             saveFile.Layers.Add(i, new Layer(texture, saveFile.Size, i));
         }
 
-        // Set App Data
-        GameManager.GetService<CanvasManager>().CurrentCanvas.Load(saveFile);
 
         Debug.Log("Loaded " + saveFile.Name + " from " + savePath);
+        return null;
     }
 
     //----------------------------------------------------
     
-    private string GetConfigPath(){
+    private static string GetConfigPath(){
         if (Application.isEditor){
             return Application.dataPath;
         }
@@ -78,7 +75,7 @@ public class SaveManager
         }
     }
 
-    private void GenerateSaveDir(CanvasSaveFile saveFile){
+    private static void GenerateSaveDirFor(CanvasSaveFile saveFile){
         saveFile.SaveLocation = StandaloneFileBrowser.SaveFilePanel(saveFile.Name, "", "", "");
         Directory.CreateDirectory(saveFile.SaveLocation);
         Directory.CreateDirectory(saveFile.SaveLocation + "/layers");

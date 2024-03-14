@@ -13,11 +13,16 @@ public class Canvas : IUpdateable
 
     //------------------------------------------------
 
-    public Canvas(string name, Vector2Int size){
-        this.name = name;
+    public Canvas(Vector2Int size){
         this.Size = size;
-        
-        AddLayer();
+    }
+
+    public Canvas(CanvasSaveFile saveFile){
+        name = saveFile.Name;
+        Size = saveFile.Size;
+        layers = saveFile.Layers;
+        saveLocation = saveFile.SaveLocation;
+        currentLayer = saveFile.Layers[0];
     }
 
     public void OnUpdate(){
@@ -26,23 +31,12 @@ public class Canvas : IUpdateable
         }
     }
 
-    public void Save(CanvasSaveFile saveFile){
+    public void SaveTo(CanvasSaveFile saveFile){
         saveFile.Name = name;
         saveFile.Size = Size;
         saveFile.Layers = layers;
         saveFile.LayerCount = layers.Count;
         saveFile.SaveLocation = saveLocation;
-    }
-
-    public void Load(CanvasSaveFile saveFile){
-
-        Clear();
-
-        name = saveFile.Name;
-        Size = saveFile.Size;
-        layers = saveFile.Layers;
-        saveLocation = saveFile.SaveLocation;
-        currentLayer = saveFile.Layers[0];
     }
 
     public void AddLayer(){
@@ -53,12 +47,5 @@ public class Canvas : IUpdateable
 
     public void SetPixel(Vector2Int pos, Color color){
         currentLayer.SetPixel(pos, color);
-    }
-
-    public void Clear(){
-        foreach (var current in layers){
-            current.Value.Clear();
-        }
-        layers.Clear();
     }
 }

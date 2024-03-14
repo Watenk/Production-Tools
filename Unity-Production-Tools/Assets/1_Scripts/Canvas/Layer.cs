@@ -2,53 +2,48 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using UnityEditor;
 using UnityEngine;
 
 [Serializable]
 public class Layer : IUpdateable
 {
+    // Data
     [SerializeField] public Texture2D Texture { get; private set; }
-    [SerializeField] private Vector2Int size;
     [SerializeField] private string name;
     [SerializeField] private int index;
 
     private List<ColorPixel> updatedPixels = new List<ColorPixel>();
     private GameObject gameObject;
+    private Canvas canvas;
 
     //--------------------------------------------------
 
-    public Layer(string name, Vector2Int size, int index){
+    public Layer(string name, int index, Canvas canvas){
 
         this.name = name;
-        this.size = size;
         this.index = index;
 
-        Texture = new Texture2D(size.x, size.y)
+        Texture = new Texture2D(canvas.Size.x, canvas.Size.y)
         {
             filterMode = FilterMode.Point,
         };
-
-        GenerateQuad();
     }
 
-    public Layer(Texture2D texture, Vector2Int size, int index){
+    public Layer(Texture2D texture, int index){
 
         Texture = texture;
-        this.size = size;
         this.index = index;
         
         Texture.filterMode = FilterMode.Point;
+    }
 
+    public void Init(Canvas canvas){
+        this.canvas = canvas;
         GenerateQuad();
     }
 
     public void OnUpdate(){
         UpdateTexture();
-    }
-
-    public Vector2Int GetSize(){
-        return size;
     }
 
     public Color GetPixel(Vector2Int pos){
@@ -60,17 +55,21 @@ public class Layer : IUpdateable
     public void SetPixel(Vector2Int pos, Color color){
         if (!IsInLayerBounds(pos)) { return; }
 
-        updatedPixels.Add(new ColorPixel(new Vector2Int(pos.x, size.y - pos.y - 1), color));
+        updatedPixels.Add(new ColorPixel(new Vector2Int(pos.x, canvas.Size.y - pos.y - 1), color));
     }
 
     public bool IsInLayerBounds(Vector2Int pos){
-        if (pos.x < 0 || pos.x >= size.x) { return false; }
-        if (pos.y < 0 || pos.y >= size.y) { return false; }
+        if (pos.x < 0 || pos.x >= canvas.Size.x) { return false; }
+        if (pos.y < 0 || pos.y >= canvas.Size.y) { return false; }
         return true;
     }
 
     public void Clear(){
         GameObject.Destroy(this.gameObject);
+    }
+
+    public void SetActive(bool value){
+        gameObject.SetActive(value);
     }
 
     //---------------------------------------------
@@ -101,7 +100,7 @@ public class Layer : IUpdateable
         MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
         MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
         meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-        Material material = new Material(Shader.Find("Unlit/Transparent"));
+        Material material = new Material(Resources.Load<Shader>("UnlitTransparent"));
         material.mainTexture = Texture;
         meshRenderer.material = material;
 
@@ -112,9 +111,9 @@ public class Layer : IUpdateable
 
         // Vertices from the bottom left, couterclockwise
         vertices[0] = new Vector3(0, 0, 0);
-        vertices[1] = new Vector3(size.x, 0, 0);
-        vertices[2] = new Vector3(0, size.y, 0);
-        vertices[3] = new Vector3(size.x, size.y, 0);
+        vertices[1] = new Vector3(canvas.Size.x, 0, 0);
+        vertices[2] = new Vector3(0, canvas.Size.y, 0);
+        vertices[3] = new Vector3(canvas.Size.x, canvas.Size.y, 0);
 
         // Triangle 1
         triangles[0] = 0;

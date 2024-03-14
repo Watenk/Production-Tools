@@ -9,13 +9,18 @@ public static class SaveManager
 {
     public static void Save(Canvas canvas){
         
+        if (canvas == null) { Debug.LogWarning("Save Failed... Canvas is null"); return; }
+
         // Generate SaveFile
         CanvasSaveFile saveFile = new CanvasSaveFile();
-        canvas.SaveTo(saveFile);
+        canvas.SaveTo(ref saveFile);
+
+        if (saveFile.Size == null || saveFile.Size == Vector2Int.zero) { Debug.LogWarning("Save Failed... Size is null"); return; }
 
         // Get Save Location (if neccecary)
         if (saveFile.SaveLocation == null){
-            GenerateSaveDirFor(saveFile);
+            saveFile.SaveLocation = StandaloneFileBrowser.SaveFilePanel(saveFile.Name, "", "", "");
+            if (saveFile.SaveLocation == "" || saveFile.SaveLocation == null) { Debug.LogWarning("Save Failed... SaveLocation is null"); return; }
         }
         if (!Directory.Exists(saveFile.SaveLocation)){
             GenerateSaveDirFor(saveFile);
@@ -28,6 +33,7 @@ public static class SaveManager
         writer.Dispose();
 
         // Write Layers PNG
+        if (saveFile.Layers == null)  { Debug.LogWarning("Save Failed... Layers is null"); return; }
         foreach (var current in saveFile.Layers){
              byte[] bytes = current.Value.Texture.EncodeToPNG();
              File.WriteAllBytes(saveFile.SaveLocation + "/layers/" + current.Key.ToString() + ".png", bytes);
@@ -56,12 +62,11 @@ public static class SaveManager
             Texture2D texture = new Texture2D(saveFile.Size.x, saveFile.Size.y);
             byte[] layerData = File.ReadAllBytes(savePath + "/layers/" + i.ToString() + ".png");
             texture.LoadImage(layerData);
-            saveFile.Layers.Add(i, new Layer(texture, saveFile.Size, i));
+            saveFile.Layers.Add(i, new Layer(texture, i));
         }
 
-
         Debug.Log("Loaded " + saveFile.Name + " from " + savePath);
-        return null;
+        return new Canvas(saveFile);
     }
 
     //----------------------------------------------------
@@ -76,7 +81,6 @@ public static class SaveManager
     }
 
     private static void GenerateSaveDirFor(CanvasSaveFile saveFile){
-        saveFile.SaveLocation = StandaloneFileBrowser.SaveFilePanel(saveFile.Name, "", "", "");
         Directory.CreateDirectory(saveFile.SaveLocation);
         Directory.CreateDirectory(saveFile.SaveLocation + "/layers");
         saveFile.Name = Path.GetFileName(saveFile.SaveLocation);

@@ -17,3 +17,6 @@ MonoBehaviour:
   MaxCamSize: 1000
   MinCamSize: 1
   ScrollSpeed: 5
+  CanvasTabPrefab: {fileID: 8538719662458095354, guid: b10c934355d0f484ab41cfb10ec76726, type: 3}
+  PlusTabPrefab: {fileID: 412549252484163966, guid: 9cdfe5bf0c82e7f4d8af5766b9d6fe14, type: 3}
+  NewCanvasInputPrefab: {fileID: 4778473836621775836, guid: 7435cc58db11323449f234769dcbef91, type: 3}

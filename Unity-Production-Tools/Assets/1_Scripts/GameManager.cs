@@ -5,6 +5,8 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+    public GameObject Canvas { get { return canvas; } }
+    [SerializeField] private GameObject canvas;
 
     private static Dictionary<System.Type, object> services = new Dictionary<System.Type, object>();
     private static List<IUpdateable> updateables = new List<IUpdateable>();
@@ -17,8 +19,8 @@ public class GameManager : MonoBehaviour
 
         AddService(new InputHandler());
         AddService(new CanvasManager());
+        AddService(new UIManager());
         AddService(new CameraController());
-        AddService(new TabManager());
     }
 
     public void Update(){

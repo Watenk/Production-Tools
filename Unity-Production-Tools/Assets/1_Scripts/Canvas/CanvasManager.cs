@@ -12,7 +12,7 @@ public class CanvasManager : IUpdateable
     // Sizes
     private Vector2Int a4 = new Vector2Int(2480, 3508);
 
-    // References
+    // Dependencies
     private InputHandler inputHandler;
 
     //----------------------------------------------
@@ -21,37 +21,37 @@ public class CanvasManager : IUpdateable
 
         inputHandler = GameManager.GetService<InputHandler>();
 
-        inputHandler.OnLeftMouseDown += OnLeftMouse;
+        inputHandler.OnLeftMouse += OnLeftMouse;
         inputHandler.OnRightMouseDown += OnRightMouseDown;
         inputHandler.OnSpaceDown += OnSpaceDown;
     }
 
     public void OnUpdate(){
-        foreach (Canvas current in canvases){
-            current.OnUpdate();
-        }
+        if (currentCanvas != null) currentCanvas.OnUpdate();
     }
 
-
-    public void NewCanvas(Vector2Int size){
+    public Canvas NewCanvas(Vector2Int size){
         Canvas newCanvas = new Canvas(size);
         canvases.Add(newCanvas);
-        SetCurrentCanvas(newCanvas);
-    }
-
-    public void SaveCanvas(Canvas canvas){
-        SaveManager.Save(canvas);
+        SwitchCanvas(newCanvas);
+        return newCanvas;
     }
 
     public Canvas LoadCanvas(){
         Canvas loadedCanvas = SaveManager.Load();
         canvases.Add(loadedCanvas);
-        SetCurrentCanvas(loadedCanvas);
+        SwitchCanvas(loadedCanvas);
         return loadedCanvas;
     }
 
-    public void SetCurrentCanvas(Canvas canvas){
+    public void SaveCanvas(Canvas savedCanvas){
+        SaveManager.Save(savedCanvas);
+    }
+
+    public void SwitchCanvas(Canvas canvas){
+        if (currentCanvas != null) currentCanvas.SetLayersActive(false);
         currentCanvas = canvas;
+        currentCanvas.SetLayersActive(true);
     }
 
     public void SetPixel(Vector2Int pos, Color color){
@@ -61,6 +61,9 @@ public class CanvasManager : IUpdateable
     //----------------------------------------------
 
     private void OnLeftMouse(){
+
+        if (currentCanvas == null) return;
+
         Vector3 camPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector2Int pos = new Vector2Int((int)camPos.x, currentCanvas.Size.y - (int)camPos.y - 1);
         SetPixel(pos, Color.red);

@@ -29,4 +29,10 @@ public class ToolSettings : ScriptableObject
     public float MaxCamSize;
     public float MinCamSize;
     public float ScrollSpeed;
+
+    [Header("Prefabs")]
+    public GameObject CanvasTabPrefab;
+    public GameObject PlusTabPrefab;
+    public GameObject NewCanvasInputPrefab;
+
 }

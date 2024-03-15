@@ -38,6 +38,12 @@ public class Canvas : IUpdateable
         }
     }
 
+    public void Remove(){
+        foreach (var current in layers){
+            current.Value.Delete();
+        }
+    }
+
     public void SaveTo(ref CanvasSaveFile saveFile){
         saveFile.Name = name;
         saveFile.Size = Size;

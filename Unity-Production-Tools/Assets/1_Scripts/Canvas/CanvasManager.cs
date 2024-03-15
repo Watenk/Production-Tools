@@ -14,16 +14,19 @@ public class CanvasManager : IUpdateable
 
     // Dependencies
     private InputHandler inputHandler;
+    private UIManager uiManager;
 
     //----------------------------------------------
 
     public CanvasManager(){
 
         inputHandler = GameManager.GetService<InputHandler>();
+        uiManager = GameManager.GetService<UIManager>();
+        uiManager.Init(this);
 
         inputHandler.OnLeftMouse += OnLeftMouse;
-        inputHandler.OnRightMouseDown += OnRightMouseDown;
-        inputHandler.OnSpaceDown += OnSpaceDown;
+        inputHandler.OnSave += OnSave;
+        inputHandler.OnLoad += OnLoad;
     }
 
     public void OnUpdate(){
@@ -33,13 +36,14 @@ public class CanvasManager : IUpdateable
     public Canvas NewCanvas(Vector2Int size){
         Canvas newCanvas = new Canvas(size);
         canvases.Add(newCanvas);
-        SwitchCanvas(newCanvas);
         return newCanvas;
     }
 
     public Canvas LoadCanvas(){
         Canvas loadedCanvas = SaveManager.Load();
+        if (loadedCanvas == null) return default;
         canvases.Add(loadedCanvas);
+        uiManager.AddTab(loadedCanvas);
         SwitchCanvas(loadedCanvas);
         return loadedCanvas;
     }
@@ -48,10 +52,24 @@ public class CanvasManager : IUpdateable
         SaveManager.Save(savedCanvas);
     }
 
+    public void RemoveCanvas(Canvas canvas){
+        canvases.Remove(canvas);
+        if (canvases.Count != 0) { SwitchCanvas(canvases[canvases.Count - 1]); }
+        else currentCanvas = null;
+        canvas.Remove();
+    }
+
     public void SwitchCanvas(Canvas canvas){
-        if (currentCanvas != null) currentCanvas.SetLayersActive(false);
-        currentCanvas = canvas;
-        currentCanvas.SetLayersActive(true);
+        if (currentCanvas == null) {
+            currentCanvas = canvas;
+            currentCanvas.SetLayersActive(true);
+        }
+        else{
+            currentCanvas.SetLayersActive(false);
+            currentCanvas = canvas;
+            currentCanvas.SetLayersActive(true);
+        }
+        uiManager.SwitchTab(canvas);
     }
 
     public void SetPixel(Vector2Int pos, Color color){
@@ -69,11 +87,11 @@ public class CanvasManager : IUpdateable
         SetPixel(pos, Color.red);
     }
 
-    private void OnRightMouseDown(){
-        SaveCanvas(currentCanvas);
+    private void OnLoad(){
+        LoadCanvas();
     }
 
-    private void OnSpaceDown(){
-        LoadCanvas();
+    private void OnSave(){
+        SaveCanvas(currentCanvas);
     }
 }

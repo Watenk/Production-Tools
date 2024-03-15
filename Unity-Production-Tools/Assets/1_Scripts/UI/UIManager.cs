@@ -9,7 +9,7 @@ public class UIManager
 {
     // Canvas Tabs
     private List<CanvasTab> canvasTabs = new List<CanvasTab>();
-    private CanvasTab plusTab;
+    private NewCanvasTab plusTab;
     private NewCanvasInput newCanvasInput;
     private float tabStartPos;
 
@@ -22,12 +22,11 @@ public class UIManager
     //----------------------------------------
 
     public UIManager(){
-        canvasManager = GameManager.GetService<CanvasManager>();
         canvasTabPrefab = ToolSettings.Instance.CanvasTabPrefab;
         tabStartPos = ToolSettings.Instance.TabStartPos;
 
-        plusTab = AddCanvasTab(ToolSettings.Instance.PlusTabPrefab);   
-        plusTab.Button.onClick.AddListener(OnPlusTab);
+        plusTab = AddNewCanvasTab(ToolSettings.Instance.PlusTabPrefab);   
+        plusTab.SelectButton.onClick.AddListener(OnPlusTab);
 
         newCanvasInput = AddNewCanvasInput(ToolSettings.Instance.NewCanvasInputPrefab);
         newCanvasInput.CancelButton.onClick.AddListener(OnCancelNewCanvas);
@@ -36,22 +35,64 @@ public class UIManager
         CalcTabsSizes();
     }
 
+    public void Init(CanvasManager canvasManager){
+        this.canvasManager = canvasManager;
+    }
+
+    public void AddTab(Canvas canvas){
+        // Canvas Tab
+        CanvasTab canvasTab = AddCanvasTab();
+        canvasTab.SetCanvas(canvas);
+        canvasTab.SelectButton.onClick.AddListener(() => OnTab(canvasTab));
+        canvasTab.DeleteButton.onClick.AddListener(() => OnTabDelete(canvasTab));
+        
+        newCanvasInput.GameObject.SetActive(false);
+
+        CalcTabsSizes();
+    }
+
+    public void SwitchTab(Canvas canvas){
+
+        foreach (var current in canvasTabs){
+            current.SelectButton.image.color = Color.white;
+        }
+
+        CanvasTab canvasTab = canvasTabs.Find(listCanvas => listCanvas.GetCanvas() == canvas);
+        canvasTab.SelectButton.image.color = Color.gray;
+    }
+
     //---------------------------------------
 
-    private CanvasTab AddCanvasTab(GameObject prefab){
+    private CanvasTab AddCanvasTab(){
+        GameObject gameObject = GameObject.Instantiate(canvasTabPrefab, GameManager.Instance.Canvas.transform);
+        RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
+        Button[] buttons = gameObject.GetComponentsInChildren<Button>(); 
+        TextMeshProUGUI text = gameObject.GetComponentInChildren<TextMeshProUGUI>();
+
+        #if UNITY_EDITOR
+            if (rectTransform == null) { Debug.LogError(canvasTabPrefab.name + " Doesn't contain a rectTransform"); }
+            if (buttons.Length != 2) { Debug.LogError(canvasTabPrefab.name +  " Doesn't contain 2 Buttons"); }
+            if (text == null) { Debug.LogError(canvasTabPrefab.name + " Doesn't contain a TextMeshPro"); }
+        #endif
+
+        CanvasTab newCanvasTab = new CanvasTab(rectTransform, buttons[0], buttons[1], text);
+        canvasTabs.Add(newCanvasTab);
+        return newCanvasTab;
+    }
+
+    private NewCanvasTab AddNewCanvasTab(GameObject prefab){
         GameObject gameObject = GameObject.Instantiate(prefab, GameManager.Instance.Canvas.transform);
         RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
-        Button button = gameObject.GetComponent<Button>(); 
+        Button selectButton = gameObject.GetComponent<Button>(); 
         TextMeshProUGUI text = gameObject.GetComponentInChildren<TextMeshProUGUI>();
 
         #if UNITY_EDITOR
             if (rectTransform == null) { Debug.LogError(prefab.name + " Doesn't contain a rectTransform"); }
-            if (button == null) { Debug.LogError(prefab.name + " Doesn't contain a button"); }
+            if (selectButton == null) { Debug.LogError(prefab.name +  " selectbutton is null"); }
             if (text == null) { Debug.LogError(prefab.name + " Doesn't contain a TextMeshPro"); }
         #endif
 
-        CanvasTab newCanvasTab = new CanvasTab(rectTransform, button, text);
-        canvasTabs.Add(newCanvasTab);
+        NewCanvasTab newCanvasTab = new NewCanvasTab(rectTransform, selectButton, text);
         return newCanvasTab;
     }
 
@@ -76,19 +117,18 @@ public class UIManager
         return new NewCanvasInput(gameObject, cancelButton, confirmButton, widthInput, heightInput);
     }
 
-    // TODO: Fix performance
     private void CalcTabsSizes(){
 
-        float currentPos = Screen.width * tabStartPos;
+        float currentPos = tabStartPos;
         for (int i = 0; i < canvasTabs.Count; i++)
         {
             CanvasTab currentTab = canvasTabs[i];
 
-            currentTab.RectTransform.anchoredPosition = new Vector3(-1260 + currentPos + (currentTab.RectTransform.sizeDelta.x / 2), 0f, 0f);
+            currentTab.RectTransform.anchoredPosition = new Vector3(-1230 + currentPos + (currentTab.RectTransform.sizeDelta.x / 2), 0f, 0f);
             currentPos += currentTab.RectTransform.sizeDelta.x;
         }
 
-        plusTab.RectTransform.anchoredPosition = new Vector3(-1260 + currentPos + (plusTab.RectTransform.sizeDelta.x / 2), 0f ,0f);
+        plusTab.RectTransform.anchoredPosition = new Vector3(-1230 + currentPos + (plusTab.RectTransform.sizeDelta.x / 2), 0f ,0f);
     }
 
     // UI Events
@@ -110,18 +150,18 @@ public class UIManager
         if (x == 0 || y == 0) return;
         
         Canvas newCanvas = canvasManager.NewCanvas(new Vector2Int(x, y));
-
-        // Canvas Tab
-        CanvasTab canvasTab = AddCanvasTab(canvasTabPrefab);
-        canvasTab.SetCanvas(newCanvas);
-        canvasTab.Button.onClick.AddListener(() => OnTab(canvasTab));
-        
-        newCanvasInput.GameObject.SetActive(false);
-
-        CalcTabsSizes();
+        AddTab(newCanvas);
+        canvasManager.SwitchCanvas(newCanvas);
     }
 
     private void OnTab(CanvasTab canvasTab){
         canvasManager.SwitchCanvas(canvasTab.GetCanvas());
+    }
+
+    private void OnTabDelete(CanvasTab canvasTab){
+        canvasManager.RemoveCanvas(canvasTab.GetCanvas());
+        canvasTabs.Remove(canvasTab);
+        GameObject.Destroy(canvasTab.RectTransform.gameObject);
+        CalcTabsSizes();
     }
 }

@@ -42,6 +42,10 @@ public class Layer : IUpdateable
         GenerateQuad();
     }
 
+    public void Delete(){
+        GameObject.Destroy(this.gameObject);
+    }
+
     public void OnUpdate(){
         UpdateTexture();
     }

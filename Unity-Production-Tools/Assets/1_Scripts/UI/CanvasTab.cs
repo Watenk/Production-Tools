@@ -7,15 +7,15 @@ using UnityEngine.UI;
 
 public class CanvasTab
 {
-    public GameObject GameObject;
+    public RectTransform RectTransform;
     public Button Button;
     public TextMeshProUGUI Text;
     private Canvas canvas;
 
     //---------------------------------
 
-    public CanvasTab(GameObject gameObject, Button button, TextMeshProUGUI text){
-        GameObject = gameObject;
+    public CanvasTab(RectTransform rectTransform, Button button, TextMeshProUGUI text){
+        RectTransform = rectTransform;
         Button = button;
         Text = text;
     }

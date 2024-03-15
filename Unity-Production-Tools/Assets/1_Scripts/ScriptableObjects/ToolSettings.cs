@@ -21,14 +21,13 @@ public class ToolSettings : ScriptableObject
 
     //------------------------------------------------------------------
 
-    [Header("Rendering")]
-    public Vector2Int MeshChunkSize;
-    public Material RenderMaterial;
-
     [Header("Input")]
     public float MaxCamSize;
     public float MinCamSize;
     public float ScrollSpeed;
+
+    [Header("UI")]
+    public float TabStartPos;
 
     [Header("Prefabs")]
     public GameObject CanvasTabPrefab;

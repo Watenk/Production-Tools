@@ -11,6 +11,7 @@ public class UIManager
     private List<CanvasTab> canvasTabs = new List<CanvasTab>();
     private CanvasTab plusTab;
     private NewCanvasInput newCanvasInput;
+    private float tabStartPos;
 
     // Prefabs
     private GameObject canvasTabPrefab;
@@ -23,6 +24,7 @@ public class UIManager
     public UIManager(){
         canvasManager = GameManager.GetService<CanvasManager>();
         canvasTabPrefab = ToolSettings.Instance.CanvasTabPrefab;
+        tabStartPos = ToolSettings.Instance.TabStartPos;
 
         plusTab = AddCanvasTab(ToolSettings.Instance.PlusTabPrefab);   
         plusTab.Button.onClick.AddListener(OnPlusTab);
@@ -30,21 +32,25 @@ public class UIManager
         newCanvasInput = AddNewCanvasInput(ToolSettings.Instance.NewCanvasInputPrefab);
         newCanvasInput.CancelButton.onClick.AddListener(OnCancelNewCanvas);
         newCanvasInput.ConfirmButton.onClick.AddListener(OnCreateNewCanvas);
+
+        CalcTabsSizes();
     }
 
     //---------------------------------------
 
     private CanvasTab AddCanvasTab(GameObject prefab){
         GameObject gameObject = GameObject.Instantiate(prefab, GameManager.Instance.Canvas.transform);
+        RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
         Button button = gameObject.GetComponent<Button>(); 
         TextMeshProUGUI text = gameObject.GetComponentInChildren<TextMeshProUGUI>();
 
         #if UNITY_EDITOR
+            if (rectTransform == null) { Debug.LogError(prefab.name + " Doesn't contain a rectTransform"); }
             if (button == null) { Debug.LogError(prefab.name + " Doesn't contain a button"); }
             if (text == null) { Debug.LogError(prefab.name + " Doesn't contain a TextMeshPro"); }
         #endif
 
-        CanvasTab newCanvasTab = new CanvasTab(gameObject, button, text);
+        CanvasTab newCanvasTab = new CanvasTab(rectTransform, button, text);
         canvasTabs.Add(newCanvasTab);
         return newCanvasTab;
     }
@@ -72,16 +78,17 @@ public class UIManager
 
     // TODO: Fix performance
     private void CalcTabsSizes(){
-        float tabWidth = Screen.width / canvasTabs.Count;
 
+        float currentPos = Screen.width * tabStartPos;
         for (int i = 0; i < canvasTabs.Count; i++)
         {
-            CanvasTab current = canvasTabs[i];
+            CanvasTab currentTab = canvasTabs[i];
 
-            float xPos = tabWidth * i + tabWidth / 2f;
-            current.GameObject.transform.position = new Vector3(xPos, current.GameObject.transform.position.y, 0f);
-            current.GameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(tabWidth, current.GameObject.GetComponent<RectTransform>().sizeDelta.y);
+            currentTab.RectTransform.anchoredPosition = new Vector3(-1260 + currentPos + (currentTab.RectTransform.sizeDelta.x / 2), 0f, 0f);
+            currentPos += currentTab.RectTransform.sizeDelta.x;
         }
+
+        plusTab.RectTransform.anchoredPosition = new Vector3(-1260 + currentPos + (plusTab.RectTransform.sizeDelta.x / 2), 0f ,0f);
     }
 
     // UI Events

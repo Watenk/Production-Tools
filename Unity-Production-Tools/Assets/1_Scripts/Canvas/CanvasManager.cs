@@ -12,21 +12,13 @@ public class CanvasManager : IUpdateable
     // Sizes
     private Vector2Int a4 = new Vector2Int(2480, 3508);
 
-    // Dependencies
-    private InputHandler inputHandler;
-    private UIManager uiManager;
-
     //----------------------------------------------
 
     public CanvasManager(){
 
-        inputHandler = GameManager.GetService<InputHandler>();
-        uiManager = GameManager.GetService<UIManager>();
-        uiManager.Init(this);
-
-        inputHandler.OnLeftMouse += OnLeftMouse;
-        inputHandler.OnSave += OnSave;
-        inputHandler.OnLoad += OnLoad;
+        EventManager.AddListener(OnLeftMouse);
+        EventManager.AddListener(OnSave);
+        EventManager.AddListener(OnLoad);
     }
 
     public void OnUpdate(){
@@ -43,7 +35,7 @@ public class CanvasManager : IUpdateable
         Canvas loadedCanvas = SaveManager.Load();
         if (loadedCanvas == null) return default;
         canvases.Add(loadedCanvas);
-        uiManager.AddTab(loadedCanvas);
+        //uiManager.AddTab(loadedCanvas);
         SwitchCanvas(loadedCanvas);
         return loadedCanvas;
     }
@@ -69,7 +61,7 @@ public class CanvasManager : IUpdateable
             currentCanvas = canvas;
             currentCanvas.SetLayersActive(true);
         }
-        uiManager.SwitchTab(canvas);
+        //uiManager.SwitchTab(canvas);
     }
 
     public void SetPixel(Vector2Int pos, Color color){

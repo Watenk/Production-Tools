@@ -16,30 +16,56 @@ public class UIManager
     // Prefabs
     private GameObject canvasTabPrefab;
 
-    // Dependencies
-    private CanvasManager canvasManager;
-
     //----------------------------------------
 
     public UIManager(){
-        canvasTabPrefab = ToolSettings.Instance.CanvasTabPrefab;
         tabStartPos = ToolSettings.Instance.TabStartPos;
 
         plusTab = AddNewCanvasTab(ToolSettings.Instance.PlusTabPrefab);   
-        plusTab.SelectButton.onClick.AddListener(OnPlusTab);
+        plusTab.SelectButton.onClick.AddListener(OnPlusTabClicked);
 
         newCanvasInput = AddNewCanvasInput(ToolSettings.Instance.NewCanvasInputPrefab);
-        newCanvasInput.CancelButton.onClick.AddListener(OnCancelNewCanvas);
-        newCanvasInput.ConfirmButton.onClick.AddListener(OnCreateNewCanvas);
+        newCanvasInput.CancelButton.onClick.AddListener(OnCancelNewCanvasClicked);
+        newCanvasInput.ConfirmButton.onClick.AddListener(OnConfirmNewCanvasClicked);
 
         CalcTabsSizes();
     }
 
-    public void Init(CanvasManager canvasManager){
-        this.canvasManager = canvasManager;
+    //-------------------------------------------
+
+    // UI Events
+    private void OnPlusTabClicked(){
+        newCanvasInput.GameObject.SetActive(true);
     }
 
-    public void AddTab(Canvas canvas){
+    private void OnCancelNewCanvasClicked(){
+        newCanvasInput.GameObject.SetActive(false);
+    }
+
+    private void OnConfirmNewCanvasClicked(){
+
+        if (newCanvasInput.WidthInput.text == "") return;
+        if (newCanvasInput.HeightInput.text == "") return;
+
+        int x = int.Parse(newCanvasInput.WidthInput.text);
+        int y = int.Parse(newCanvasInput.HeightInput.text);
+        if (x == 0 || y == 0) return;
+        
+        EventManager.Invoke("OnNewCanvas", new Vector2Int(x, y));
+    }
+
+    private void OnTab(CanvasTab canvasTab){
+        //canvasManager.SwitchCanvas(canvasTab.GetCanvas());
+    }
+
+    private void OnTabDelete(CanvasTab canvasTab){
+        //canvasManager.RemoveCanvas(canvasTab.GetCanvas());
+        canvasTabs.Remove(canvasTab);
+        GameObject.Destroy(canvasTab.RectTransform.gameObject);
+        CalcTabsSizes();
+    }
+
+    private void AddTab(Canvas canvas){
         // Canvas Tab
         CanvasTab canvasTab = AddCanvasTab();
         canvasTab.SetCanvas(canvas);
@@ -51,7 +77,7 @@ public class UIManager
         CalcTabsSizes();
     }
 
-    public void SwitchTab(Canvas canvas){
+    private void SwitchTab(Canvas canvas){
 
         foreach (var current in canvasTabs){
             current.SelectButton.image.color = Color.white;
@@ -60,8 +86,6 @@ public class UIManager
         CanvasTab canvasTab = canvasTabs.Find(listCanvas => listCanvas.GetCanvas() == canvas);
         canvasTab.SelectButton.image.color = Color.gray;
     }
-
-    //---------------------------------------
 
     private CanvasTab AddCanvasTab(){
         GameObject gameObject = GameObject.Instantiate(canvasTabPrefab, GameManager.Instance.Canvas.transform);
@@ -131,37 +155,5 @@ public class UIManager
         plusTab.RectTransform.anchoredPosition = new Vector3(-1230 + currentPos + (plusTab.RectTransform.sizeDelta.x / 2), 0f ,0f);
     }
 
-    // UI Events
-    private void OnPlusTab(){
-        newCanvasInput.GameObject.SetActive(true);
-    }
 
-    private void OnCancelNewCanvas(){
-        newCanvasInput.GameObject.SetActive(false);
-    }
-
-    private void OnCreateNewCanvas(){
-
-        if (newCanvasInput.WidthInput.text == "") return;
-        if (newCanvasInput.HeightInput.text == "") return;
-
-        int x = int.Parse(newCanvasInput.WidthInput.text);
-        int y = int.Parse(newCanvasInput.HeightInput.text);
-        if (x == 0 || y == 0) return;
-        
-        Canvas newCanvas = canvasManager.NewCanvas(new Vector2Int(x, y));
-        AddTab(newCanvas);
-        canvasManager.SwitchCanvas(newCanvas);
-    }
-
-    private void OnTab(CanvasTab canvasTab){
-        canvasManager.SwitchCanvas(canvasTab.GetCanvas());
-    }
-
-    private void OnTabDelete(CanvasTab canvasTab){
-        canvasManager.RemoveCanvas(canvasTab.GetCanvas());
-        canvasTabs.Remove(canvasTab);
-        GameObject.Destroy(canvasTab.RectTransform.gameObject);
-        CalcTabsSizes();
-    }
 }

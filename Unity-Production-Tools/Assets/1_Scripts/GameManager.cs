@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     public void Awake(){
         Instance = this;
 
+        AddService(new EventManagerNoParamater());
         AddService(new InputHandler());
         AddService(new UIManager());
         AddService(new CanvasManager());

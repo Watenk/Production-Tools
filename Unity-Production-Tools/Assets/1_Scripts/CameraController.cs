@@ -7,18 +7,20 @@ public class CameraController
     private bool moveCam;
     private Vector2 previousMousePos;
 
-    //References
-    private InputHandler inputHandler;
-
     //-------------------------------------------------------------------
 
     public CameraController(){
-        inputHandler = GameManager.GetService<InputHandler>();
+        EventManager.AddListener(OnMousePosChange);
+        EventManager.AddListener(OnMiddleMouseDown);
+        EventManager.AddListener(OnMiddleMouseUp);
+        EventManager.AddListener<float>(OnMouseScroll);
+    }
 
-        inputHandler.OnMousePosChange += OnMousePosChange;
-        inputHandler.OnMiddleMouseDown += OnMiddleMouseDown;
-        inputHandler.OnMiddleMouseUp += OnMiddleMouseUp;
-        inputHandler.OnMouseScroll += OnMouseScroll;
+    ~CameraController(){
+        EventManager.RemoveListener(OnMousePosChange);
+        EventManager.RemoveListener(OnMiddleMouseDown);
+        EventManager.RemoveListener(OnMiddleMouseUp);
+        EventManager.RemoveListener<float>(OnMouseScroll);
     }
 
     //--------------------------------------------------------------------

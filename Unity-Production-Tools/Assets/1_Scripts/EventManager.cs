@@ -11,20 +11,20 @@ public static class EventManager
 
     //--------------------------------------------------
 
-    public static void AddListener(Action listener){
-        Get().AddListener(listener);
+    public static void AddListener(string eventName, Action listener){
+        Get().AddListener(eventName, listener);
     }
 
-    public static void AddListener<T>(Action<T> listener){
-        Get<T>().AddListener(listener);
+    public static void AddListener<T>(string eventName, Action<T> listener){
+        Get<T>().AddListener(eventName, listener);
     }
 
-    public static void RemoveListener(Action listener){
-        Get().RemoveListener(listener);
+    public static void RemoveListener(string eventName, Action listener){
+        Get().RemoveListener(eventName, listener);
     }
 
-    public static void RemoveListener<T>(Action<T> listener){
-        Get<T>().RemoveListener(listener);
+    public static void RemoveListener<T>(string eventName, Action<T> listener){
+        Get<T>().RemoveListener(eventName, listener);
     }
 
     public static void Invoke(string eventName){
@@ -70,8 +70,7 @@ public class EventManagerNoParamater
 
     //---------------------------------------------------
 
-    public void AddListener(Action listener){
-        string eventName = listener.ToString();
+    public void AddListener(string eventName, Action listener){
         if (eventDictionary.TryGetValue(eventName, out Action currentEvent)){
             currentEvent += listener;
             eventDictionary[eventName] = currentEvent;
@@ -82,8 +81,7 @@ public class EventManagerNoParamater
         }
     }
 
-    public void RemoveListener(Action listener){
-        string eventName = listener.ToString();
+    public void RemoveListener(string eventName, Action listener){
         if (eventDictionary.TryGetValue(eventName, out Action currentEvent)){
             currentEvent -= listener;
             eventDictionary[eventName] = currentEvent;
@@ -108,8 +106,7 @@ public class EventManagerParameter<T>
 
     //---------------------------------------------------
 
-    public void AddListener(Action<T> listener){
-        string eventName = listener.ToString();
+    public void AddListener(string eventName, Action<T> listener){
         Action<T> currentEvent;
         if (eventDictionary.TryGetValue(eventName, out currentEvent)){
             currentEvent += listener;
@@ -121,8 +118,7 @@ public class EventManagerParameter<T>
         }
     }
 
-    public void RemoveListener(Action<T> listener){
-        string eventName = listener.ToString();
+    public void RemoveListener(string eventName, Action<T> listener){
         Action<T> currentEvent;
         if (eventDictionary.TryGetValue(eventName, out currentEvent)){
             currentEvent -= listener;

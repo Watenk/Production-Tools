@@ -10,22 +10,15 @@ public class CameraController
     //-------------------------------------------------------------------
 
     public CameraController(){
-        EventManager.AddListener(OnMousePosChange);
-        EventManager.AddListener(OnMiddleMouseDown);
-        EventManager.AddListener(OnMiddleMouseUp);
-        EventManager.AddListener<float>(OnMouseScroll);
-    }
-
-    ~CameraController(){
-        EventManager.RemoveListener(OnMousePosChange);
-        EventManager.RemoveListener(OnMiddleMouseDown);
-        EventManager.RemoveListener(OnMiddleMouseUp);
-        EventManager.RemoveListener<float>(OnMouseScroll);
+        EventManager.AddListener("OnMousePosChange", MousePosChange);
+        EventManager.AddListener("OnMiddleMouseDown", MiddleMouseDown);
+        EventManager.AddListener("OnMiddleMouseUp", MiddleMouseUp);
+        EventManager.AddListener<float>("OnMouseScroll", MouseScroll);
     }
 
     //--------------------------------------------------------------------
 
-    private void OnMousePosChange(){
+    private void MousePosChange(){
         if (moveCam == true){
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
@@ -37,16 +30,16 @@ public class CameraController
         }
     }
 
-    private void OnMiddleMouseDown(){
+    private void MiddleMouseDown(){
         previousMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         moveCam = true;
     }
 
-    private void OnMiddleMouseUp(){
+    private void MiddleMouseUp(){
         moveCam = false;
     }
 
-    private void OnMouseScroll(float scrollDelta){
+    private void MouseScroll(float scrollDelta){
         if (scrollDelta > 0f && Camera.main.orthographicSize > ToolSettings.Instance.MinCamSize)
         {
             Camera.main.orthographicSize -= Camera.main.orthographicSize * ToolSettings.Instance.ScrollSpeed * 0.01f;

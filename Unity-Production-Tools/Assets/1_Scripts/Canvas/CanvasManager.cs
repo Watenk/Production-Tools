@@ -16,56 +16,16 @@ public class CanvasManager : IUpdateable
 
     public CanvasManager(){
 
-        EventManager.AddListener(OnLeftMouse);
-        EventManager.AddListener(OnSave);
-        EventManager.AddListener(OnLoad);
+        EventManager.AddListener("OnLeftMouse", OnLeftMouse);
+        EventManager.AddListener("OnSave", SaveCanvas);
+        EventManager.AddListener("OnLoad", LoadCanvas);
+        EventManager.AddListener<Vector2Int>("OnNewCanvasClicked", NewCanvas);
+        EventManager.AddListener<Canvas>("OnSwitchCanvasClicked", SwitchCanvas);
+        EventManager.AddListener<Canvas>("OnRemoveCanvasClicked", RemoveCanvas);
     }
 
     public void OnUpdate(){
         if (currentCanvas != null) currentCanvas.OnUpdate();
-    }
-
-    public Canvas NewCanvas(Vector2Int size){
-        Canvas newCanvas = new Canvas(size);
-        canvases.Add(newCanvas);
-        return newCanvas;
-    }
-
-    public Canvas LoadCanvas(){
-        Canvas loadedCanvas = SaveManager.Load();
-        if (loadedCanvas == null) return default;
-        canvases.Add(loadedCanvas);
-        //uiManager.AddTab(loadedCanvas);
-        SwitchCanvas(loadedCanvas);
-        return loadedCanvas;
-    }
-
-    public void SaveCanvas(Canvas savedCanvas){
-        SaveManager.Save(savedCanvas);
-    }
-
-    public void RemoveCanvas(Canvas canvas){
-        canvases.Remove(canvas);
-        if (canvases.Count != 0) { SwitchCanvas(canvases[canvases.Count - 1]); }
-        else currentCanvas = null;
-        canvas.Remove();
-    }
-
-    public void SwitchCanvas(Canvas canvas){
-        if (currentCanvas == null) {
-            currentCanvas = canvas;
-            currentCanvas.SetLayersActive(true);
-        }
-        else{
-            currentCanvas.SetLayersActive(false);
-            currentCanvas = canvas;
-            currentCanvas.SetLayersActive(true);
-        }
-        //uiManager.SwitchTab(canvas);
-    }
-
-    public void SetPixel(Vector2Int pos, Color color){
-        currentCanvas.SetPixel(pos, color);
     }
 
     //----------------------------------------------
@@ -79,11 +39,41 @@ public class CanvasManager : IUpdateable
         SetPixel(pos, Color.red);
     }
 
-    private void OnLoad(){
-        LoadCanvas();
+    private void NewCanvas(Vector2Int size){
+        Canvas newCanvas = new Canvas(size);
+        canvases.Add(newCanvas);
+        EventManager.Invoke("OnNewCanvas", newCanvas);
+        SwitchCanvas(newCanvas);
     }
 
-    private void OnSave(){
-        SaveCanvas(currentCanvas);
+    private void LoadCanvas(){
+        Canvas loadedCanvas = SaveManager.Load();
+        if (loadedCanvas == null) return;
+        canvases.Add(loadedCanvas);
+        EventManager.Invoke("OnLoadCanvas", loadedCanvas);
+        SwitchCanvas(loadedCanvas);
+    }
+
+    private void SaveCanvas(){
+        SaveManager.Save(currentCanvas);
+    }
+
+    private void RemoveCanvas(Canvas canvas){
+        canvases.Remove(canvas);
+        if (canvases.Count != 0) { SwitchCanvas(canvases[canvases.Count - 1]); }
+        else currentCanvas = null;
+        canvas.Remove();
+    }
+
+    private void SwitchCanvas(Canvas canvas){
+        if (currentCanvas != null) currentCanvas.SetLayersActive(false);
+        currentCanvas = canvas;
+        currentCanvas.SetLayersActive(true);
+        
+        EventManager.Invoke("OnSwitchTab", currentCanvas);
+    }
+
+    private void SetPixel(Vector2Int pos, Color color){
+        currentCanvas.SetPixel(pos, color);
     }
 }

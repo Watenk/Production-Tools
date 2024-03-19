@@ -3,11 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SFB;
+using Watenk;
 
 public class CanvasManager : IUpdateable
 {
     private List<Canvas> canvases = new List<Canvas>();
     private Canvas currentCanvas;
+    private Color currentColor;
 
     // Sizes
     private Vector2Int a4 = new Vector2Int(2480, 3508);
@@ -22,6 +24,7 @@ public class CanvasManager : IUpdateable
         EventManager.AddListener<Vector2Int>("OnNewCanvasClicked", NewCanvas);
         EventManager.AddListener<Canvas>("OnSwitchCanvasClicked", SwitchCanvas);
         EventManager.AddListener<Canvas>("OnRemoveCanvasClicked", RemoveCanvas);
+        EventManager.AddListener<Color>("OnCurrentColorChanged", OnCurrentColorChanged);
     }
 
     public void OnUpdate(){
@@ -33,10 +36,19 @@ public class CanvasManager : IUpdateable
     private void OnLeftMouse(){
 
         if (currentCanvas == null) return;
+        if (!GridUtil.IsInBounds(
+        new Vector2(Input.mousePosition.x, Screen.height -Input.mousePosition.y), 
+        new Vector2(References.Instance.ToolBarBackground.sizeDelta.x, References.Instance.TabsBarBackground.sizeDelta.y), 
+        new Vector2(Screen.width - References.Instance.RightBarBackground.sizeDelta.x, Screen.height))) 
+        return;
 
         Vector3 camPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector2Int pos = new Vector2Int((int)camPos.x, currentCanvas.Size.y - (int)camPos.y - 1);
-        SetPixel(pos, Color.red);
+        SetPixel(pos, currentColor);
+    }
+
+    private void OnCurrentColorChanged(Color color){
+        currentColor = color;
     }
 
     private void NewCanvas(Vector2Int size){

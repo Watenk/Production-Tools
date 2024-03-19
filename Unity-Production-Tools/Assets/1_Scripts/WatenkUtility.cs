@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Watenk{
-public static class GridUtil
-{
+public static class GridUtil{
     public static bool IsInBounds(Vector2Int pos, Vector2Int boundPos1, Vector2Int boundPos2){
         if (pos.x < boundPos1.x || pos.x >= boundPos2.x) { return false; }
         if (pos.y < boundPos1.y || pos.y >= boundPos2.y) { return false; }

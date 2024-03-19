@@ -76,6 +76,7 @@ public class ColorPicker
         float lightness = MathUtil.Map(colorPickerHandle.anchoredPosition.y, 0,  colorPickerInputField.sizeDelta.y, 0, 100) + 50;
         currentColor = ColorUtil.HSLToRGB((int)hueSlider.value, (int)saturation, (int)lightness);
         currentColorImage.color = currentColor;
+        EventManager.Invoke("OnCurrentColorChanged", currentColor);
     }
 
     private Texture2D GenerateFieldTexture(Vector2Int size){

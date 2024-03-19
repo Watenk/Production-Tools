@@ -411,7 +411,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 52.5, y: 0}
+  m_AnchoredPosition: {x: 50, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &224279262
@@ -2704,6 +2704,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Canvas: {fileID: 517203477}
   TabParent: {fileID: 199319116}
+  ToolBarBackground: {fileID: 1137923895}
+  TabsBarBackground: {fileID: 523630923}
+  RightBarBackground: {fileID: 621181048}
   ColorPickerInputField: {fileID: 166176186}
   ColorPickerInputHandle: {fileID: 337499811}
   ColorPickerInputHueSlider: {fileID: 2000405708}
@@ -2760,7 +2763,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -23.5, y: 2.9000244}
+  m_AnchoredPosition: {x: -23.5, y: 2.8999023}
   m_SizeDelta: {x: 100, y: 0}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &2086661052

@@ -24,8 +24,7 @@ public static class GridUtil
 }
 
 public static class MathUtil{
-    public static float Map(float value, float fromSource, float toSource, float fromTarget, float toTarget)
-    {
+    public static float Map(float value, float fromSource, float toSource, float fromTarget, float toTarget){
         return (value - fromSource) / (toSource - fromSource) * (toTarget - fromTarget) + fromTarget;
     }
 }

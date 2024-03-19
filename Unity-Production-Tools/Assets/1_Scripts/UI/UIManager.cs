@@ -110,7 +110,7 @@ public class UIManager
     //-----------------------------------------------------------
 
     private CanvasTab CreateCanvasTab(){
-        GameObject gameObject = GameObject.Instantiate(tabPrefab, GameManager.Instance.TabParent.transform);
+        GameObject gameObject = GameObject.Instantiate(tabPrefab, References.Instance.TabParent.transform);
         RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
         Button[] buttons = gameObject.GetComponentsInChildren<Button>(); 
         TextMeshProUGUI text = gameObject.GetComponentInChildren<TextMeshProUGUI>();
@@ -127,7 +127,7 @@ public class UIManager
     }
 
     private NewCanvasTab CreateNewCanvasTab(GameObject prefab){
-        GameObject gameObject = GameObject.Instantiate(prefab, GameManager.Instance.TabParent.transform);
+        GameObject gameObject = GameObject.Instantiate(prefab, References.Instance.TabParent.transform);
         RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
         Button selectButton = gameObject.GetComponent<Button>(); 
         TextMeshProUGUI text = gameObject.GetComponentInChildren<TextMeshProUGUI>();
@@ -144,7 +144,7 @@ public class UIManager
     }
 
     private NewCanvasInput CreateNewCanvasInput(GameObject prefab){
-        GameObject gameObject = GameObject.Instantiate(prefab, GameManager.Instance.Canvas.transform);
+        GameObject gameObject = GameObject.Instantiate(prefab, References.Instance.Canvas.transform);
         Button[] buttons = gameObject.GetComponentsInChildren<Button>(); 
         TMP_InputField[] inputs = gameObject.GetComponentsInChildren<TMP_InputField>();
 

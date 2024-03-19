@@ -10,10 +10,10 @@ public class CameraController
     //-------------------------------------------------------------------
 
     public CameraController(){
-        EventManager.AddListener("OnMousePosChange", MousePosChange);
-        EventManager.AddListener("OnMiddleMouseDown", MiddleMouseDown);
-        EventManager.AddListener("OnMiddleMouseUp", MiddleMouseUp);
-        EventManager.AddListener<float>("OnMouseScroll", MouseScroll);
+        EventManager.AddListener(Events.OnMousePosChange, MousePosChange);
+        EventManager.AddListener(Events.OnMiddleMouseDown, MiddleMouseDown);
+        EventManager.AddListener(Events.OnMiddleMouseUp, MiddleMouseUp);
+        EventManager.AddListener<float>(Events.OnMouseScroll, MouseScroll);
     }
 
     //--------------------------------------------------------------------

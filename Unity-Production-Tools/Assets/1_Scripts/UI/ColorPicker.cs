@@ -29,9 +29,9 @@ public class ColorPicker
             if (inputFieldImage == null) { Debug.LogError("colorPickerInputField doesn't contain a RawImage"); }
         #endif
 
-        EventManager.AddListener("OnLeftMouseUp", OnLeftMouseUp);
-        EventManager.AddListener("OnLeftMouse", OnLeftMouse);
-        EventManager.AddListener("OnLeftMouseDown", OnLeftMouseDown);
+        EventManager.AddListener(Events.OnLeftMouseUp, OnLeftMouseUp);
+        EventManager.AddListener(Events.OnLeftMouse, OnLeftMouse);
+        EventManager.AddListener(Events.OnLeftMouseDown, OnLeftMouseDown);
         hueSlider.onValueChanged.AddListener(OnHueChanged);
         
         inputFieldImage.material = new Material(Resources.Load<Shader>("UnlitTransparent"));
@@ -76,7 +76,7 @@ public class ColorPicker
         float lightness = MathUtil.Map(colorPickerHandle.anchoredPosition.y, 0,  colorPickerInputField.sizeDelta.y, 0, 100) + 50;
         currentColor = ColorUtil.HSLToRGB((int)hueSlider.value, (int)saturation, (int)lightness);
         currentColorImage.color = currentColor;
-        EventManager.Invoke("OnCurrentColorChanged", currentColor);
+        EventManager.Invoke(Events.OnCurrentColorChanged, currentColor);
     }
 
     private Texture2D GenerateFieldTexture(Vector2Int size){

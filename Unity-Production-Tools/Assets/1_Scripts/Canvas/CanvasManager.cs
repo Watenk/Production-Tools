@@ -18,13 +18,13 @@ public class CanvasManager : IUpdateable
 
     public CanvasManager(){
 
-        EventManager.AddListener("OnLeftMouse", OnLeftMouse);
-        EventManager.AddListener("OnSave", SaveCanvas);
-        EventManager.AddListener("OnLoad", LoadCanvas);
-        EventManager.AddListener<Vector2Int>("OnNewCanvasClicked", NewCanvas);
-        EventManager.AddListener<Canvas>("OnSwitchCanvasClicked", SwitchCanvas);
-        EventManager.AddListener<Canvas>("OnRemoveCanvasClicked", RemoveCanvas);
-        EventManager.AddListener<Color>("OnCurrentColorChanged", OnCurrentColorChanged);
+        EventManager.AddListener(Events.OnLeftMouse, OnLeftMouse);
+        EventManager.AddListener(Events.OnSave, SaveCanvas);
+        EventManager.AddListener(Events.OnLoad, LoadCanvas);
+        EventManager.AddListener<Vector2Int>(Events.OnNewCanvasClicked, NewCanvas);
+        EventManager.AddListener<Canvas>(Events.OnSwitchCanvasClicked, SwitchCanvas);
+        EventManager.AddListener<Canvas>(Events.OnRemoveCanvasClicked, RemoveCanvas);
+        EventManager.AddListener<Color>(Events.OnCurrentColorChanged, OnCurrentColorChanged);
     }
 
     public void OnUpdate(){
@@ -54,7 +54,7 @@ public class CanvasManager : IUpdateable
     private void NewCanvas(Vector2Int size){
         Canvas newCanvas = new Canvas(size);
         canvases.Add(newCanvas);
-        EventManager.Invoke("OnNewCanvas", newCanvas);
+        EventManager.Invoke(Events.OnNewCanvas, newCanvas);
         SwitchCanvas(newCanvas);
     }
 
@@ -62,7 +62,7 @@ public class CanvasManager : IUpdateable
         Canvas loadedCanvas = SaveManager.Load();
         if (loadedCanvas == null) return;
         canvases.Add(loadedCanvas);
-        EventManager.Invoke("OnLoadCanvas", loadedCanvas);
+        EventManager.Invoke(Events.OnLoadCanvas, loadedCanvas);
         SwitchCanvas(loadedCanvas);
     }
 
@@ -82,7 +82,7 @@ public class CanvasManager : IUpdateable
         currentCanvas = canvas;
         currentCanvas.SetLayersActive(true);
         
-        EventManager.Invoke("OnSwitchTab", currentCanvas);
+        EventManager.Invoke(Events.OnSwitchTab, currentCanvas);
     }
 
     private void SetPixel(Vector2Int pos, Color color){

@@ -11,40 +11,40 @@ public static class EventManager
 
     //--------------------------------------------------
 
-    public static void AddListener(string eventName, Action listener){
+    public static void AddListener(Events eventName, Action listener){
         Get().AddListener(eventName, listener);
     }
 
-    public static void AddListener<T>(string eventName, Action<T> listener){
+    public static void AddListener<T>(Events eventName, Action<T> listener){
         Get<T>().AddListener(eventName, listener);
     }
 
-    public static void RemoveListener(string eventName, Action listener){
+    public static void RemoveListener(Events eventName, Action listener){
         Get().RemoveListener(eventName, listener);
     }
 
-    public static void RemoveListener<T>(string eventName, Action<T> listener){
+    public static void RemoveListener<T>(Events eventName, Action<T> listener){
         Get<T>().RemoveListener(eventName, listener);
     }
 
-    public static void Invoke(string eventName){
+    public static void Invoke(Events eventName){
         Get().Invoke(eventName);
     }
 
-    public static void Invoke<T>(string eventName, T eventParam){
+    public static void Invoke<T>(Events eventName, T eventParam){
         Get<T>().Invoke(eventName, eventParam);
     }
 
     //---------------------------------------------------
 
-    private static EventManagerNoParamater Get(){
-        Type type = typeof(EventManagerNoParamater);
+    private static EventManagerNoParameter Get(){
+        Type type = typeof(EventManagerNoParameter);
 
         if (eventManagers.ContainsKey(type)){
-            return eventManagers[type] as EventManagerNoParamater;
+            return eventManagers[type] as EventManagerNoParameter;
         }
         else{
-            EventManagerNoParamater newEventManager = new EventManagerNoParamater();
+            EventManagerNoParameter newEventManager = new EventManagerNoParameter();
             eventManagers.Add(type, newEventManager);
             return newEventManager;
         }
@@ -64,13 +64,13 @@ public static class EventManager
     }
 }
 
-public class EventManagerNoParamater
+public class EventManagerNoParameter
 {
-    private Dictionary<string, Action> eventDictionary = new Dictionary<string, Action>();
+    private Dictionary<Events, Action> eventDictionary = new Dictionary<Events, Action>();
 
     //---------------------------------------------------
 
-    public void AddListener(string eventName, Action listener){
+    public void AddListener(Events eventName, Action listener){
         if (eventDictionary.TryGetValue(eventName, out Action currentEvent)){
             currentEvent += listener;
             eventDictionary[eventName] = currentEvent;
@@ -81,14 +81,14 @@ public class EventManagerNoParamater
         }
     }
 
-    public void RemoveListener(string eventName, Action listener){
+    public void RemoveListener(Events eventName, Action listener){
         if (eventDictionary.TryGetValue(eventName, out Action currentEvent)){
             currentEvent -= listener;
             eventDictionary[eventName] = currentEvent;
         }
     }
 
-    public void Invoke(string eventName){
+    public void Invoke(Events eventName){
         if (eventDictionary.TryGetValue(eventName, out Action thisEvent)){
             thisEvent.Invoke();
         }
@@ -102,11 +102,11 @@ public class EventManagerNoParamater
 
 public class EventManagerParameter<T>
 {
-    private Dictionary<string, Action<T>> eventDictionary = new Dictionary<string, Action<T>>();
+    private Dictionary<Events, Action<T>> eventDictionary = new Dictionary<Events, Action<T>>();
 
     //---------------------------------------------------
 
-    public void AddListener(string eventName, Action<T> listener){
+    public void AddListener(Events eventName, Action<T> listener){
         Action<T> currentEvent;
         if (eventDictionary.TryGetValue(eventName, out currentEvent)){
             currentEvent += listener;
@@ -118,7 +118,7 @@ public class EventManagerParameter<T>
         }
     }
 
-    public void RemoveListener(string eventName, Action<T> listener){
+    public void RemoveListener(Events eventName, Action<T> listener){
         Action<T> currentEvent;
         if (eventDictionary.TryGetValue(eventName, out currentEvent)){
             currentEvent -= listener;
@@ -126,7 +126,7 @@ public class EventManagerParameter<T>
         }
     }
 
-    public void Invoke(string eventName, T eventParam){
+    public void Invoke(Events eventName, T eventParam){
         Action<T> currentEvent = null;
         if (eventDictionary.TryGetValue(eventName, out currentEvent)){
             currentEvent.Invoke(eventParam);

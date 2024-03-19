@@ -29,9 +29,9 @@ public class UIManager
         plusTab = CreateNewCanvasTab(ToolSettings.Instance.PlusTabPrefab);   
         newCanvasInput = CreateNewCanvasInput(ToolSettings.Instance.NewCanvasInputPrefab);
 
-        EventManager.AddListener<Canvas>("OnNewCanvas", AddTab);
-        EventManager.AddListener<Canvas>("OnLoadCanvas", AddTab);
-        EventManager.AddListener<Canvas>("OnSwitchTab", SwitchTab);
+        EventManager.AddListener<Canvas>(Events.OnNewCanvas, AddTab);
+        EventManager.AddListener<Canvas>(Events.OnLoadCanvas, AddTab);
+        EventManager.AddListener<Canvas>(Events.OnSwitchTab, SwitchTab);
 
         CalcTabsSizes();
     }
@@ -56,18 +56,18 @@ public class UIManager
         if (x == 0 || y == 0) return;
         
         newCanvasInput.GameObject.SetActive(false);
-        EventManager.Invoke("OnNewCanvasClicked", new Vector2Int(x, y));
+        EventManager.Invoke(Events.OnNewCanvasClicked, new Vector2Int(x, y));
     }
 
     private void OnTabClicked(CanvasTab canvasTab){
-        EventManager.Invoke("OnSwitchCanvasClicked", canvasTab.GetCanvas());
+        EventManager.Invoke(Events.OnSwitchCanvasClicked, canvasTab.GetCanvas());
     }
 
     private void OnTabDeleteClicked(CanvasTab canvasTab){
         canvasTabs.Remove(canvasTab);
         GameObject.Destroy(canvasTab.RectTransform.gameObject);
         CalcTabsSizes();
-        EventManager.Invoke("OnRemoveCanvasClicked", canvasTab.GetCanvas());
+        EventManager.Invoke(Events.OnRemoveCanvasClicked, canvasTab.GetCanvas());
     }
 
     //---------------------------------------------------

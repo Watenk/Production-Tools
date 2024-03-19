@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Watenk;
 
 public class UIManager
 {
@@ -12,6 +13,8 @@ public class UIManager
     private NewCanvasTab plusTab;
     private NewCanvasInput newCanvasInput;
     private float tabStartPos;
+
+    private ColorPicker colorPicker;
 
     // Prefabs
     private GameObject tabPrefab;
@@ -22,6 +25,7 @@ public class UIManager
         tabStartPos = ToolSettings.Instance.TabStartPos;
         tabPrefab = ToolSettings.Instance.CanvasTabPrefab;
 
+        colorPicker = new ColorPicker();
         plusTab = CreateNewCanvasTab(ToolSettings.Instance.PlusTabPrefab);   
         newCanvasInput = CreateNewCanvasInput(ToolSettings.Instance.NewCanvasInputPrefab);
 
@@ -96,17 +100,17 @@ public class UIManager
         {
             CanvasTab currentTab = canvasTabs[i];
 
-            currentTab.RectTransform.anchoredPosition = new Vector3(-1230 + currentPos + (currentTab.RectTransform.sizeDelta.x / 2), 0f, 0f);
+            currentTab.RectTransform.anchoredPosition = new Vector3(currentPos + (currentTab.RectTransform.sizeDelta.x / 2), 0f, 0f);
             currentPos += currentTab.RectTransform.sizeDelta.x;
         }
 
-        plusTab.RectTransform.anchoredPosition = new Vector3(-1230 + currentPos + (plusTab.RectTransform.sizeDelta.x / 2), 0f ,0f);
+        plusTab.RectTransform.anchoredPosition = new Vector3(currentPos + (plusTab.RectTransform.sizeDelta.x / 2), 0f ,0f);
     }
 
     //-----------------------------------------------------------
 
     private CanvasTab CreateCanvasTab(){
-        GameObject gameObject = GameObject.Instantiate(tabPrefab, GameManager.Instance.Canvas.transform);
+        GameObject gameObject = GameObject.Instantiate(tabPrefab, GameManager.Instance.TabParent.transform);
         RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
         Button[] buttons = gameObject.GetComponentsInChildren<Button>(); 
         TextMeshProUGUI text = gameObject.GetComponentInChildren<TextMeshProUGUI>();
@@ -123,7 +127,7 @@ public class UIManager
     }
 
     private NewCanvasTab CreateNewCanvasTab(GameObject prefab){
-        GameObject gameObject = GameObject.Instantiate(prefab, GameManager.Instance.Canvas.transform);
+        GameObject gameObject = GameObject.Instantiate(prefab, GameManager.Instance.TabParent.transform);
         RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
         Button selectButton = gameObject.GetComponent<Button>(); 
         TextMeshProUGUI text = gameObject.GetComponentInChildren<TextMeshProUGUI>();

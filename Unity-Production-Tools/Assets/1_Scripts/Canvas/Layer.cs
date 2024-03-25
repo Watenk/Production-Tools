@@ -33,9 +33,10 @@ public class Layer
 
         for (int y = 0; y < canvas.Size.y; y++){
             for (int x = 0; x < canvas.Size.x; x++){
-                SetPixel(new Vector2Int(x, y), new Color(0.8f, 0.8f, 0.8f, 1.0f));
+                SetPixel(new Vector2Int(x, y), new Color(0.8f, 0.8f, 0.8f, 1.0f), false);
             }   
         }
+        UpdateTexture();
     }
 
     // load Layer From Save
@@ -64,6 +65,12 @@ public class Layer
 
         updatedPixels.Add(new ColorPos(new Vector2Int(pos.x, canvas.Size.y - pos.y - 1), color));
         UpdateTexture();
+    }
+
+    public void SetPixel(Vector2Int pos, Color color, bool dontUpdateTexure){
+        if (!IsInLayerBounds(pos)) { return; }
+
+        updatedPixels.Add(new ColorPos(new Vector2Int(pos.x, canvas.Size.y - pos.y - 1), color));
     }
 
     public bool IsInLayerBounds(Vector2Int pos){

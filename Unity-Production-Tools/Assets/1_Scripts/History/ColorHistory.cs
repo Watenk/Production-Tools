@@ -19,8 +19,8 @@ public class ColorHistory : IHistory
     }
 
     public void SetPixel(Vector2Int pos, Color oldColor, Color newColor){
-        newColors.Add(pos, newColor);
-        oldColors.Add(pos, oldColor);
+        newColors.TryAdd(pos, newColor);
+        oldColors.TryAdd(pos, oldColor);
         Count++;
     }
 

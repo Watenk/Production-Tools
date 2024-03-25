@@ -13,10 +13,12 @@ public enum Events
     OnMiddleMouseDown,
     OnMiddleMouseUp,
     OnSpaceDown,
-    OnSave,
-    OnLoad,
     OnMouseScroll,
     OnMousePosChange,
+    OnSave,
+    OnLoad,
+    OnUndo,
+    OnRedo,
 
     // Canvas
     OnNewCanvas,

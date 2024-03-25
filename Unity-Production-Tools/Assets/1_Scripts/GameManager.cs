@@ -24,7 +24,6 @@ public class GameManager : MonoBehaviour
     public void Start(){
         instance = this;
 
-        AddService(new CommandManager());
         AddService(new InputHandler());
         AddService(new UIManager());
         AddService(new CanvasManager());

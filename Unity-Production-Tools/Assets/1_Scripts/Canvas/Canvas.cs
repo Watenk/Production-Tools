@@ -2,40 +2,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Canvas : IUpdateable
+public class Canvas
 {
     public Vector2Int Size { get; private set; }
+    public HistoryManager HistoryManager { get; private set; }
+    public Layer CurrentLayer { get; private set; }
 
     // CanvasData
     private string saveLocation;
     private string name;
     private Dictionary<int, Layer> layers = new Dictionary<int, Layer>();
-    private Layer currentLayer;
     
     //------------------------------------------------
 
     public Canvas(Vector2Int size){
         this.Size = size;
+        HistoryManager = new HistoryManager();
+
         AddLayer();
     }
 
+    // Load Canvas from Save
     public Canvas(CanvasSaveFile saveFile){
         name = saveFile.Name;
         Size = saveFile.Size;
         layers = saveFile.Layers;
-
-        foreach (var current in layers){
-            current.Value.Init(this);
-        }
-
         saveLocation = saveFile.SaveLocation;
-        currentLayer = saveFile.Layers[0];
-    }
-
-    public void OnUpdate(){
-        foreach (var current in layers){
-            current.Value.OnUpdate();
-        }
+        CurrentLayer = saveFile.Layers[0];
     }
 
     public void Remove(){
@@ -54,13 +47,18 @@ public class Canvas : IUpdateable
 
     public void AddLayer(){
         Layer newLayer = new Layer("New Layer", layers.Count, this);
-        newLayer.Init(this);
         layers.Add(layers.Count, newLayer);
-        currentLayer = newLayer;
+        CurrentLayer = newLayer;
+    }
+
+    public Color GetPixel(Vector2Int pos){
+        if (CurrentLayer == null) return Color.magenta;
+        return CurrentLayer.GetPixel(pos);
     }
 
     public void SetPixel(Vector2Int pos, Color color){
-        if (currentLayer != null) currentLayer.SetPixel(pos, color);
+        if (CurrentLayer == null) return;
+        CurrentLayer.SetPixel(pos, color);
     }
 
     public void SetLayersActive(bool value){

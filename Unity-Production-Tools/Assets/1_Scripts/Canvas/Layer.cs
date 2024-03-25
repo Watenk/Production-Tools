@@ -5,14 +5,14 @@ using System.Linq.Expressions;
 using UnityEngine;
 
 [Serializable]
-public class Layer : IUpdateable
+public class Layer
 {
     // Data
     [SerializeField] public Texture2D Texture { get; private set; }
     [SerializeField] private string name;
     [SerializeField] private int index;
 
-    private List<ColorPixel> updatedPixels = new List<ColorPixel>();
+    private List<ColorPos> updatedPixels = new List<ColorPos>();
     private GameObject gameObject;
     private Canvas canvas;
 
@@ -22,23 +22,30 @@ public class Layer : IUpdateable
 
         this.name = name;
         this.index = index;
+        this.canvas = canvas;
 
         Texture = new Texture2D(canvas.Size.x, canvas.Size.y)
         {
             filterMode = FilterMode.Point,
         };
+
+        GenerateQuad();
+
+        for (int y = 0; y < canvas.Size.y; y++){
+            for (int x = 0; x < canvas.Size.x; x++){
+                SetPixel(new Vector2Int(x, y), new Color(0.8f, 0.8f, 0.8f, 1.0f));
+            }   
+        }
     }
 
+    // load Layer From Save
     public Layer(Texture2D texture, int index){
 
         Texture = texture;
         this.index = index;
         
         Texture.filterMode = FilterMode.Point;
-    }
-
-    public void Init(Canvas canvas){
-        this.canvas = canvas;
+        
         GenerateQuad();
     }
 
@@ -46,20 +53,17 @@ public class Layer : IUpdateable
         GameObject.Destroy(this.gameObject);
     }
 
-    public void OnUpdate(){
-        UpdateTexture();
-    }
-
     public Color GetPixel(Vector2Int pos){
         if (!IsInLayerBounds(pos)) { return default; }
 
-        return Texture.GetPixel(pos.x, pos.y);
+        return Texture.GetPixel(pos.x, canvas.Size.y - pos.y - 1);
     }
 
     public void SetPixel(Vector2Int pos, Color color){
         if (!IsInLayerBounds(pos)) { return; }
 
-        updatedPixels.Add(new ColorPixel(new Vector2Int(pos.x, canvas.Size.y - pos.y - 1), color));
+        updatedPixels.Add(new ColorPos(new Vector2Int(pos.x, canvas.Size.y - pos.y - 1), color));
+        UpdateTexture();
     }
 
     public bool IsInLayerBounds(Vector2Int pos){
@@ -80,10 +84,9 @@ public class Layer : IUpdateable
 
     private void UpdateTexture(){
 
-        if (updatedPixels.Count == 0) { return; }
+        if (updatedPixels.Count == 0) return;
 
-        //TODO: improve performance
-        foreach (ColorPixel current in updatedPixels){
+        foreach (ColorPos current in updatedPixels){
             Texture.SetPixel(current.pos.x, current.pos.y, current.color);
         }
 

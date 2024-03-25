@@ -26,6 +26,8 @@ public class InputHandler : IUpdateable
         if (Input.GetKeyDown(KeyCode.Space)) { EventManager.Invoke(Events.OnSpaceDown); }
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.S)) { EventManager.Invoke(Events.OnSave); }
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.L)) { EventManager.Invoke(Events.OnLoad); }
+        if (Input.GetKey(KeyCode.LeftControl) && !Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.Z)) { EventManager.Invoke(Events.OnUndo); }
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.Z)) { EventManager.Invoke(Events.OnRedo); }
 
         if (Input.mouseScrollDelta.y != 0) { EventManager.Invoke(Events.OnMouseScroll, Input.mouseScrollDelta.y); }
         

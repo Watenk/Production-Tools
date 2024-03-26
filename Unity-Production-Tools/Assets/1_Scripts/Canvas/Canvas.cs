@@ -80,6 +80,18 @@ public class Canvas
         CurrentLayer = layer;
     }
 
+    public void PromoteLayer(Layer layer){
+        if (layer.Index == layers.Count - 1) return;
+
+        
+    }
+
+    public void DemoteLayer(Layer layer){
+        if (layer.Index == 0) return;
+
+
+    }
+
     public Color GetPixel(Vector2Int pos){
         if (CurrentLayer == null) return Color.magenta;
         return CurrentLayer.GetPixel(pos);

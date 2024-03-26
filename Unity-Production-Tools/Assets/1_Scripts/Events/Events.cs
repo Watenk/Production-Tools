@@ -25,9 +25,26 @@ public enum Events
     OnLoadCanvas,
     OnSwitchTab,
 
+    // Layers
+    OnNewLayer,
+    OnRemoveLayer,
+    OnLayerSwitchBackgroundToGray,
+    OnLayerSwitchBackgroundToWhite,
+
     // UI
+    // Canvas
     OnNewCanvasClicked,
     OnSwitchCanvasClicked,
     OnRemoveCanvasClicked,
+    // Color Picker
     OnCurrentColorChanged,
+    // Layers
+    OnAddLayerClicked,
+    OnRemoveLayerClicked,
+    OnPromoteLayerClicked,
+    OnDemoteLayerClicked,
+    OnLayerAlphaChanged,
+    OnLayerVisiblityClicked,
+    OnLayerLockClicked,
+    OnLayerSelectClicked,
 }

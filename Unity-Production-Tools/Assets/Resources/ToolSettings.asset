@@ -19,3 +19,4 @@ MonoBehaviour:
   CanvasTabPrefab: {fileID: 2434949242430845975, guid: 829db69e48687ad4bbfbf38abe5285bc, type: 3}
   PlusTabPrefab: {fileID: 412549252484163966, guid: 9cdfe5bf0c82e7f4d8af5766b9d6fe14, type: 3}
   NewCanvasInputPrefab: {fileID: 4778473836621775836, guid: 7435cc58db11323449f234769dcbef91, type: 3}
+  LayerUIPrefab: {fileID: 3831926610202831962, guid: ac701d2fdfb81f643bfd0cd3d75d643d, type: 3}

@@ -25,9 +25,12 @@ public class GameManager : MonoBehaviour
         instance = this;
 
         AddService(new InputHandler());
-        AddService(new UIManager());
         AddService(new CanvasManager());
         AddService(new CameraController());
+
+        AddService(new TabUI());
+        AddService(new ColorPickerUI());
+        AddService(new LayerUI());
     }
 
     public void Update(){

@@ -6,7 +6,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using Watenk;
 
-public class UIManager
+// What is this class.... needs a rewrite
+
+public class TabUI
 {
     // Canvas Tabs
     private List<CanvasTab> canvasTabs = new List<CanvasTab>();
@@ -14,18 +16,15 @@ public class UIManager
     private NewCanvasInput newCanvasInput;
     private float tabStartPos;
 
-    private ColorPicker colorPicker;
-
     // Prefabs
     private GameObject tabPrefab;
 
     //----------------------------------------
 
-    public UIManager(){
+    public TabUI(){
         tabStartPos = ToolSettings.Instance.TabStartPos;
         tabPrefab = ToolSettings.Instance.CanvasTabPrefab;
 
-        colorPicker = new ColorPicker();
         plusTab = CreateNewCanvasTab(ToolSettings.Instance.PlusTabPrefab);   
         newCanvasInput = CreateNewCanvasInput(ToolSettings.Instance.NewCanvasInputPrefab);
 
@@ -37,6 +36,7 @@ public class UIManager
     }
 
     //-------------------------------------------
+    // Events
 
     private void OnPlusTabClicked(){
         newCanvasInput.GameObject.SetActive(true);
@@ -58,6 +58,8 @@ public class UIManager
         newCanvasInput.GameObject.SetActive(false);
         EventManager.Invoke(Events.OnNewCanvasClicked, new Vector2Int(x, y));
     }
+
+    // Tab Events
 
     private void OnTabClicked(CanvasTab canvasTab){
         EventManager.Invoke(Events.OnSwitchCanvasClicked, canvasTab.GetCanvas());
@@ -108,6 +110,7 @@ public class UIManager
     }
 
     //-----------------------------------------------------------
+    // Factory's
 
     private CanvasTab CreateCanvasTab(){
         GameObject gameObject = GameObject.Instantiate(tabPrefab, References.Instance.TabParent.transform);

@@ -23,17 +23,26 @@ public class References : MonoBehaviour
 
     //-------------------------------------------
 
-    [Header("UI")]
+    [Header("Parents")]
     public GameObject Canvas;
     public Transform TabParent;
     public RectTransform ToolBarBackground;
     public RectTransform TabsBarBackground;
     public RectTransform RightBarBackground;
 
+    [Header("Layers")]
+    public RectTransform LayerScrollContent;
+    public Button AddLayerButton;
+    public Button RemoveLayerButton;
+    public Button PromoteLayerButton;
+    public Button DemoteLayerButton;
+    public Slider LayerAlphaSlider;
+
     [Header("Color Picker")]
     public RectTransform ColorPickerInputField;
     public RectTransform ColorPickerInputHandle;
     public Slider ColorPickerInputHueSlider;
+    public Slider ColorPickerAlphaSlider;
     public RawImage ColorPickerHueSliderBackground;
     public Image ColorPickerCurrentColor;
 }

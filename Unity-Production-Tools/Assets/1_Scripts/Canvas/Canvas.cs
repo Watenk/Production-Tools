@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Canvas
@@ -16,10 +17,11 @@ public class Canvas
     //------------------------------------------------
 
     public Canvas(Vector2Int size){
-        this.Size = size;
+        Size = size;
         HistoryManager = new HistoryManager();
 
-        AddLayer();
+        Layer layer = AddLayer();
+        layer.GenerateBackground();
     }
 
     // Load Canvas from Save
@@ -28,7 +30,7 @@ public class Canvas
         Size = saveFile.Size;
         layers = saveFile.Layers;
         saveLocation = saveFile.SaveLocation;
-        CurrentLayer = saveFile.Layers[0];
+        SwitchLayer(saveFile.Layers[0]);
     }
 
     public void Remove(){
@@ -45,10 +47,37 @@ public class Canvas
         saveFile.SaveLocation = saveLocation;
     }
 
-    public void AddLayer(){
+    public Layer AddLayer(){
         Layer newLayer = new Layer("New Layer", layers.Count, this);
         layers.Add(layers.Count, newLayer);
-        CurrentLayer = newLayer;
+        EventManager.Invoke(Events.OnNewLayer, newLayer);
+        SwitchLayer(newLayer);
+        return newLayer;
+    }
+
+    public void RemoveLayer(){
+        if (CurrentLayer == null) return;
+
+        EventManager.Invoke(Events.OnRemoveLayer, CurrentLayer);
+        layers.Remove(CurrentLayer.Index);
+        CurrentLayer.Delete();
+        CurrentLayer = null;
+
+        ReCalcLayerIndexes();
+        
+        if (layers.Count > 0){
+            layers.TryGetValue(layers.Count - 1, out Layer newCurrentLayer);
+            SwitchLayer(newCurrentLayer);
+        } 
+        else{
+            CurrentLayer = null;
+        }
+    }
+
+    public void SwitchLayer(Layer layer){
+        if (CurrentLayer != null) EventManager.Invoke(Events.OnLayerSwitchBackgroundToWhite, CurrentLayer);
+        EventManager.Invoke(Events.OnLayerSwitchBackgroundToGray, layer);
+        CurrentLayer = layer;
     }
 
     public Color GetPixel(Vector2Int pos){
@@ -65,5 +94,21 @@ public class Canvas
         foreach (var current in layers){
             current.Value.SetActive(value);
         }
+    }
+
+    //----------------------------------
+
+    private void ReCalcLayerIndexes(){
+
+        var sortedKeys = layers.Keys.OrderBy(key => key).ToList();
+        Dictionary<int, Layer> orderedLayers = new Dictionary<int, Layer>();
+        int newIndex = 0;
+        foreach (var key in sortedKeys){
+            orderedLayers[newIndex] = layers[key];
+            orderedLayers[newIndex].SetIndex(newIndex);
+            newIndex++;
+        }
+
+        layers = orderedLayers;
     }
 }

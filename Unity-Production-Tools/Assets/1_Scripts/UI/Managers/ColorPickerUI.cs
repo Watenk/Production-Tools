@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Watenk;
 
-public class ColorPicker
+public class ColorPickerUI
 {
     private Color currentColor;
     private RectTransform colorPickerInputField;
@@ -17,7 +17,7 @@ public class ColorPicker
 
     //----------------------------------------------
 
-    public ColorPicker(){
+    public ColorPickerUI(){
         colorPickerInputField = References.Instance.ColorPickerInputField;
         colorPickerHandle = References.Instance.ColorPickerInputHandle;
         hueSlider = References.Instance.ColorPickerInputHueSlider;
@@ -41,6 +41,7 @@ public class ColorPicker
     }
 
     //---------------------------------------------
+    // Events
 
     private void OnLeftMouseDown(){
         RectTransformUtility.ScreenPointToLocalPointInRectangle(colorPickerInputField, Input.mousePosition, null, out Vector2 colorPickerMousePos);

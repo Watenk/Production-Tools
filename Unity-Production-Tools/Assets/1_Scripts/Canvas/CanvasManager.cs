@@ -17,16 +17,29 @@ public class CanvasManager
 
     public CanvasManager(){
 
+        // Mouse Inputs
         EventManager.AddListener(Events.OnLeftMouse, OnLeftMouse);
         EventManager.AddListener(Events.OnLeftMouseUp, OnLeftMouseUp);
+
+        // Keyboard Inputs
         EventManager.AddListener(Events.OnSave, SaveCanvas);
         EventManager.AddListener(Events.OnLoad, LoadCanvas);
         EventManager.AddListener(Events.OnUndo, OnUndo);
         EventManager.AddListener(Events.OnRedo, OnRedo);
+
+        // UI Inputs
+        // Canvas
         EventManager.AddListener<Vector2Int>(Events.OnNewCanvasClicked, NewCanvas);
         EventManager.AddListener<Canvas>(Events.OnSwitchCanvasClicked, SwitchCanvas);
         EventManager.AddListener<Canvas>(Events.OnRemoveCanvasClicked, RemoveCanvas);
+        // Color Picker
         EventManager.AddListener<Color>(Events.OnCurrentColorChanged, OnCurrentColorChanged);
+        // Layers
+        EventManager.AddListener(Events.OnAddLayerClicked, () => currentCanvas?.AddLayer());
+        EventManager.AddListener(Events.OnRemoveLayerClicked, () => currentCanvas?.RemoveLayer());
+        //EventManager.AddListener<Layer>(Events.OnLayerVisiblityClicked, (layer) => currentCanvas?.SwitchLayer(layer));
+        //EventManager.AddListener<Layer>(Events.OnLayerLockClicked, (layer) => currentCanvas?.SwitchLayer(layer));
+        EventManager.AddListener<Layer>(Events.OnLayerSelectClicked, (layerUITab) => currentCanvas?.SwitchLayer(layerUITab));
     }
 
     //----------------------------------------------

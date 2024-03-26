@@ -8,9 +8,9 @@ using UnityEngine;
 public class Layer
 {
     // Data
+    [SerializeField] public int Index { get; private set; }
     [SerializeField] public Texture2D Texture { get; private set; }
     [SerializeField] private string name;
-    [SerializeField] private int index;
 
     private List<ColorPos> updatedPixels = new List<ColorPos>();
     private GameObject gameObject;
@@ -21,7 +21,7 @@ public class Layer
     public Layer(string name, int index, Canvas canvas){
 
         this.name = name;
-        this.index = index;
+        this.Index = index;
         this.canvas = canvas;
 
         Texture = new Texture2D(canvas.Size.x, canvas.Size.y)
@@ -33,7 +33,7 @@ public class Layer
 
         for (int y = 0; y < canvas.Size.y; y++){
             for (int x = 0; x < canvas.Size.x; x++){
-                SetPixel(new Vector2Int(x, y), new Color(0.8f, 0.8f, 0.8f, 1.0f), false);
+                SetPixel(new Vector2Int(x, y), new Color(0.0f, 0.0f, 0.0f, 0.0f), false);
             }   
         }
         UpdateTexture();
@@ -43,7 +43,7 @@ public class Layer
     public Layer(Texture2D texture, int index){
 
         Texture = texture;
-        this.index = index;
+        this.Index = index;
         
         Texture.filterMode = FilterMode.Point;
         
@@ -87,6 +87,19 @@ public class Layer
         gameObject.SetActive(value);
     }
 
+    public void GenerateBackground(){
+        for (int y = 0; y < canvas.Size.y; y++){
+            for (int x = 0; x < canvas.Size.x; x++){
+                SetPixel(new Vector2Int(x, y), new Color(0.8f, 0.8f, 0.8f, 1.0f), false);
+            }   
+        }
+        UpdateTexture();
+    }
+
+    public void SetIndex(int newIndex){
+        Index = newIndex;
+    }
+
     //---------------------------------------------
 
     private void UpdateTexture(){
@@ -106,7 +119,7 @@ public class Layer
         // GameObject
         gameObject = new GameObject("Layer");
         gameObject.transform.SetParent(GameManager.Instance.gameObject.transform);
-        gameObject.transform.position = Vector3.zero;
+        gameObject.transform.position = new Vector3(0, 0, -Index);
         gameObject.isStatic = true;
 
         // Mesh

@@ -33,5 +33,6 @@ public class ToolSettings : ScriptableObject
     public GameObject CanvasTabPrefab;
     public GameObject PlusTabPrefab;
     public GameObject NewCanvasInputPrefab;
+    public GameObject LayerUIPrefab;
 
 }

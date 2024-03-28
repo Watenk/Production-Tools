@@ -22,25 +22,22 @@ public class LayerUI
         References.Instance.DemoteLayerButton.onClick.AddListener(() => EventManager.Invoke(Events.OnDemoteLayerClicked));
         References.Instance.LayerAlphaSlider.onValueChanged.AddListener((newValue) => EventManager.Invoke(Events.OnLayerAlphaChanged, newValue));
 
-        EventManager.AddListener<Layer>(Events.OnNewLayer, CreateLayerUI);
+        EventManager.AddListener<Layer>(Events.OnNewLayer, AddLayerUI);
         EventManager.AddListener<Layer>(Events.OnRemoveLayer, RemoveLayerUI);
         EventManager.AddListener<Layer>(Events.OnLayerSwitchBackgroundToWhite, OnLayerSwitchBackgroundToWhite);
         EventManager.AddListener<Layer>(Events.OnLayerSwitchBackgroundToGray, OnLayerSwitchBackgroundToGray);
+        EventManager.AddListener<Canvas>(Events.OnSwitchTab, OnSwitchTab);
     }
 
     //---------------------------------------------
 
-    private void OnLayerSwitchBackgroundToWhite(Layer layer){
-        LayerUITab layerUITab = layerUITabs.Find((currentUITab) => currentUITab.Layer == layer);
-        layerUITab.Background.color = Color.white;
+    private void OnSwitchTab(Canvas canvas){
+        ClearLayers();
+        AddLayers(canvas);
+        OnLayerSwitchBackgroundToGray(canvas.CurrentLayer);
     }
 
-    private void OnLayerSwitchBackgroundToGray(Layer layer){
-        LayerUITab layerUITab = layerUITabs.Find((currentUITab) => currentUITab.Layer == layer);
-        layerUITab.Background.color = Color.gray;
-    }
-
-    private void CreateLayerUI(Layer layer){
+    private void AddLayerUI(Layer layer){
         GameObject gameObject = GameObject.Instantiate(layerUIPrefab, layerScrollContent);
         gameObject.transform.SetSiblingIndex(0);
         Button[] buttons = gameObject.GetComponentsInChildren<Button>(); 
@@ -65,5 +62,30 @@ public class LayerUI
         LayerUITab layerUITab = layerUITabs.Find((currentUITab) => currentUITab.Layer == layer);
         layerUITabs.Remove(layerUITab);
         GameObject.Destroy(layerUITab.GameObject);
+    }
+
+    private void ClearLayers(){
+        foreach (LayerUITab current in layerUITabs){
+            GameObject.Destroy(current.GameObject);
+        }
+        layerUITabs.Clear();
+    }
+
+    private void AddLayers(Canvas canvas){
+        Dictionary<int, Layer> layers = canvas.GetLayers();
+        foreach (var kvp in layers){
+            AddLayerUI(kvp.Value);
+        }
+    }
+
+    // What amazing non-hardcoded methods :)
+    private void OnLayerSwitchBackgroundToWhite(Layer layer){
+        LayerUITab layerUITab = layerUITabs.Find((currentUITab) => currentUITab.Layer == layer);
+        layerUITab.Background.color = Color.white;
+    }
+
+    private void OnLayerSwitchBackgroundToGray(Layer layer){
+        LayerUITab layerUITab = layerUITabs.Find((currentUITab) => currentUITab.Layer == layer);
+        layerUITab.Background.color = Color.gray;
     }
 }

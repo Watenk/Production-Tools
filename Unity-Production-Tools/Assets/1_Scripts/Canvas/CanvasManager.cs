@@ -106,7 +106,7 @@ public class CanvasManager
     }
 
     private void SwitchCanvas(Canvas canvas){
-        if (currentCanvas != null) currentCanvas.SetLayersActive(false);
+        currentCanvas?.SetLayersActive(false);
         currentCanvas = canvas;
         currentCanvas.SetLayersActive(true);
         

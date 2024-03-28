@@ -55,6 +55,10 @@ public class Canvas
         return newLayer;
     }
 
+    public Dictionary<int, Layer> GetLayers(){
+        return layers;
+    }
+
     public void RemoveLayer(){
         if (CurrentLayer == null) return;
 

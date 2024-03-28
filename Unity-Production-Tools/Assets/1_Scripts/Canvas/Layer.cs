@@ -12,88 +12,77 @@ public class Layer
     [SerializeField] public Texture2D Texture { get; private set; }
     [SerializeField] private string name;
 
+    public GameObject GameObject;
     private List<ColorPos> updatedPixels = new List<ColorPos>();
-    private GameObject gameObject;
-    private Canvas canvas;
+    private Vector2Int canvasSize;
 
     //--------------------------------------------------
 
-    public Layer(string name, int index, Canvas canvas){
+    public Layer(string name, int index, Vector2Int canvasSize, Color background){
 
         this.name = name;
         this.Index = index;
-        this.canvas = canvas;
+        this.canvasSize = canvasSize;
 
-        Texture = new Texture2D(canvas.Size.x, canvas.Size.y)
+        Texture = new Texture2D(canvasSize.x, canvasSize.y)
         {
             filterMode = FilterMode.Point,
         };
 
-        GenerateQuad();
+        GenerateQuad(name);
 
-        for (int y = 0; y < canvas.Size.y; y++){
-            for (int x = 0; x < canvas.Size.x; x++){
-                SetPixel(new Vector2Int(x, y), new Color(0.0f, 0.0f, 0.0f, 0.0f), false);
+        for (int y = 0; y < canvasSize.y; y++){
+            for (int x = 0; x < canvasSize.x; x++){
+                SetPixel(new Vector2Int(x, y), background, false);
             }   
         }
         UpdateTexture();
+        EventManager.Invoke(Events.OnNewLayer, this);
     }
 
     // load Layer From Save
-    public Layer(Texture2D texture, int index){
+    public Layer(string name, int index, Vector2Int canvasSize, Texture2D texture){
+
+        this.name = name;
+        this.Index = index;
+        this.canvasSize = canvasSize;
 
         Texture = texture;
-        this.Index = index;
-        
         Texture.filterMode = FilterMode.Point;
         
-        GenerateQuad();
+        GenerateQuad(name);
+        EventManager.Invoke(Events.OnNewLayer, this);
     }
 
     public void Delete(){
-        GameObject.Destroy(this.gameObject);
+        GameObject.Destroy(this.GameObject);
     }
 
     public Color GetPixel(Vector2Int pos){
         if (!IsInLayerBounds(pos)) { return default; }
 
-        return Texture.GetPixel(pos.x, canvas.Size.y - pos.y - 1);
+        return Texture.GetPixel(pos.x, canvasSize.y - pos.y - 1);
     }
 
-    public void SetPixel(Vector2Int pos, Color color){
+    public void SetPixel(Vector2Int pos, Color color, bool updateTexure){
         if (!IsInLayerBounds(pos)) { return; }
 
-        updatedPixels.Add(new ColorPos(new Vector2Int(pos.x, canvas.Size.y - pos.y - 1), color));
-        UpdateTexture();
-    }
-
-    public void SetPixel(Vector2Int pos, Color color, bool dontUpdateTexure){
-        if (!IsInLayerBounds(pos)) { return; }
-
-        updatedPixels.Add(new ColorPos(new Vector2Int(pos.x, canvas.Size.y - pos.y - 1), color));
+        updatedPixels.Add(new ColorPos(new Vector2Int(pos.x, canvasSize.y - pos.y - 1), color));
+        if (updateTexure) UpdateTexture();
     }
 
     public bool IsInLayerBounds(Vector2Int pos){
-        if (pos.x < 0 || pos.x >= canvas.Size.x) { return false; }
-        if (pos.y < 0 || pos.y >= canvas.Size.y) { return false; }
+        if (pos.x < 0 || pos.x >= canvasSize.x) { return false; }
+        if (pos.y < 0 || pos.y >= canvasSize.y) { return false; }
         return true;
     }
 
     public void Clear(){
-        GameObject.Destroy(this.gameObject);
+        GameObject.Destroy(this.GameObject);
     }
 
     public void SetActive(bool value){
-        gameObject.SetActive(value);
-    }
-
-    public void GenerateBackground(){
-        for (int y = 0; y < canvas.Size.y; y++){
-            for (int x = 0; x < canvas.Size.x; x++){
-                SetPixel(new Vector2Int(x, y), new Color(0.8f, 0.8f, 0.8f, 1.0f), false);
-            }   
-        }
-        UpdateTexture();
+        GameObject.SetActive(value);
     }
 
     public void SetIndex(int newIndex){
@@ -114,18 +103,18 @@ public class Layer
         Texture.Apply();
     }
 
-    private void GenerateQuad(){
+    private void GenerateQuad(string name){
 
         // GameObject
-        gameObject = new GameObject("Layer");
-        gameObject.transform.SetParent(GameManager.Instance.gameObject.transform);
-        gameObject.transform.position = new Vector3(0, 0, -Index);
-        gameObject.isStatic = true;
+        GameObject = new GameObject(name);
+        GameObject.transform.SetParent(GameManager.Instance.gameObject.transform);
+        GameObject.transform.position = new Vector3(0, 0, -Index);
+        GameObject.isStatic = true;
 
         // Mesh
         Mesh mesh = new Mesh();
-        MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
-        MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
+        MeshFilter meshFilter = GameObject.AddComponent<MeshFilter>();
+        MeshRenderer meshRenderer = GameObject.AddComponent<MeshRenderer>();
         meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         Material material = new Material(Resources.Load<Shader>("UnlitTransparent"));
         material.mainTexture = Texture;
@@ -138,9 +127,9 @@ public class Layer
 
         // Vertices from the bottom left, couterclockwise
         vertices[0] = new Vector3(0, 0, 0);
-        vertices[1] = new Vector3(canvas.Size.x, 0, 0);
-        vertices[2] = new Vector3(0, canvas.Size.y, 0);
-        vertices[3] = new Vector3(canvas.Size.x, canvas.Size.y, 0);
+        vertices[1] = new Vector3(canvasSize.x, 0, 0);
+        vertices[2] = new Vector3(0, canvasSize.y, 0);
+        vertices[3] = new Vector3(canvasSize.x, canvasSize.y, 0);
 
         // Triangle 1
         triangles[0] = 0;

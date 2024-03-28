@@ -49,4 +49,5 @@ public enum Events
     OnLayerVisiblityClicked,
     OnLayerLockClicked,
     OnLayerSelectClicked,
+    OnCanvasNull,
 }

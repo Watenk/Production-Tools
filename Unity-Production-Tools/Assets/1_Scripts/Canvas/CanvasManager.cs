@@ -38,7 +38,7 @@ public class CanvasManager
         EventManager.AddListener<Color>(Events.OnCurrentColorChanged, OnCurrentColorChanged);
         EventManager.AddListener<float>(Events.OnBrushAlphaChanged, (value) => currentAlpha = value);
         // Layers
-        EventManager.AddListener(Events.OnAddLayerClicked, () => currentCanvas?.AddLayer());
+        EventManager.AddListener(Events.OnAddLayerClicked, () => currentCanvas?.AddLayer(new Color(1.0f, 1.0f, 1.0f, 0.0f)));
         EventManager.AddListener(Events.OnRemoveLayerClicked, () => currentCanvas?.RemoveLayer());
         //EventManager.AddListener<Layer>(Events.OnLayerVisiblityClicked, (layer) => currentCanvas?.SwitchLayer(layer));
         //EventManager.AddListener<Layer>(Events.OnLayerLockClicked, (layer) => currentCanvas?.SwitchLayer(layer));
@@ -101,7 +101,10 @@ public class CanvasManager
     private void RemoveCanvas(Canvas canvas){
         canvases.Remove(canvas);
         if (canvases.Count != 0) { SwitchCanvas(canvases[canvases.Count - 1]); }
-        else currentCanvas = null;
+        else{
+            currentCanvas = null;
+            EventManager.Invoke(Events.OnCanvasNull);
+        }
         canvas.Remove();
     }
 

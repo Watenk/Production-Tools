@@ -27,6 +27,7 @@ public class LayerUI
         EventManager.AddListener<Layer>(Events.OnLayerSwitchBackgroundToWhite, OnLayerSwitchBackgroundToWhite);
         EventManager.AddListener<Layer>(Events.OnLayerSwitchBackgroundToGray, OnLayerSwitchBackgroundToGray);
         EventManager.AddListener<Canvas>(Events.OnSwitchTab, OnSwitchTab);
+        EventManager.AddListener(Events.OnCanvasNull, () => ClearLayers());
     }
 
     //---------------------------------------------

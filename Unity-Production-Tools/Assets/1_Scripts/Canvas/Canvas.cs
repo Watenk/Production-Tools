@@ -13,15 +13,17 @@ public class Canvas
     private string saveLocation;
     private string name;
     private Dictionary<int, Layer> layers = new Dictionary<int, Layer>();
+    private Layer background;
     
     //------------------------------------------------
 
     public Canvas(Vector2Int size){
         Size = size;
         HistoryManager = new HistoryManager();
+        background = new Layer("White Background", 0, Size, Color.white);
+        background.GameObject.transform.position = new Vector3(background.GameObject.transform.position.x, background.GameObject.transform.position.y, 1.0f);
 
-        Layer layer = AddLayer();
-        layer.GenerateBackground();
+        AddLayer(new Color(0.8f, 0.8f, 0.8f, 1.0f), "Background");
     }
 
     // Load Canvas from Save
@@ -37,6 +39,7 @@ public class Canvas
         foreach (var current in layers){
             current.Value.Delete();
         }
+        GameObject.Destroy(background.GameObject);
     }
 
     public void SaveTo(ref CanvasSaveFile saveFile){
@@ -47,10 +50,16 @@ public class Canvas
         saveFile.SaveLocation = saveLocation;
     }
 
-    public Layer AddLayer(){
-        Layer newLayer = new Layer("New Layer", layers.Count, this);
+    public Layer AddLayer(Color color){
+        Layer newLayer = new Layer("New Layer", layers.Count, Size, color);
         layers.Add(layers.Count, newLayer);
-        EventManager.Invoke(Events.OnNewLayer, newLayer);
+        SwitchLayer(newLayer);
+        return newLayer;
+    }
+
+    public Layer AddLayer(Color color, string name){
+        Layer newLayer = new Layer(name, layers.Count, Size, color);
+        layers.Add(layers.Count, newLayer);
         SwitchLayer(newLayer);
         return newLayer;
     }
@@ -103,7 +112,7 @@ public class Canvas
 
     public void SetPixel(Vector2Int pos, Color color){
         if (CurrentLayer == null) return;
-        CurrentLayer.SetPixel(pos, color);
+        CurrentLayer.SetPixel(pos, color, true);
     }
 
     public void SetLayersActive(bool value){

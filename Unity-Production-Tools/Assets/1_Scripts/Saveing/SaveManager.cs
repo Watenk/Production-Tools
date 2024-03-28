@@ -87,11 +87,11 @@ public static class SaveManager
         // Read Layers PNG's
         if (!Directory.Exists(savePath + "/layers")) { Debug.LogWarning("Load Failed... Couldn't find " + savePath + "/layers"); return null; }
         for (int i = 0; i < saveFile.LayerCount; i++){
-            if (!File.Exists(savePath + "/data.txt")) { Debug.LogWarning("Load Failed... Couldn't find " + savePath + "/layers/" + i + ".png"); return null; }
+            if (!File.Exists(savePath + "/layers/" + i + ".png")) { Debug.LogWarning("Load Failed... Couldn't find " + savePath + "/layers/" + i + ".png"); return null; }
             Texture2D texture = new Texture2D(saveFile.Size.x, saveFile.Size.y);
-            byte[] layerData = File.ReadAllBytes(savePath + "/layers/" + i.ToString() + ".png");
+            byte[] layerData = File.ReadAllBytes(savePath + "/layers/" + i + ".png");
             texture.LoadImage(layerData);
-            saveFile.Layers.Add(i, new Layer(texture, i));
+            saveFile.Layers.Add(i, new Layer("LoadingTempName", i, saveFile.Size, texture));
         }
 
         Debug.Log("Loaded " + saveFile.Name + " from " + savePath);
@@ -99,15 +99,6 @@ public static class SaveManager
     }
 
     //----------------------------------------------------
-    
-    private static string GetConfigPath(){
-        if (Application.isEditor){
-            return Application.dataPath;
-        }
-        else{
-            return Application.persistentDataPath;
-        }
-    }
 
     private static void GenerateSaveDirFor(CanvasSaveFile saveFile){
         Directory.CreateDirectory(saveFile.SaveLocation);

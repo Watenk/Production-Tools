@@ -43,7 +43,7 @@ public class LayerUI
         gameObject.transform.SetSiblingIndex(0);
         Button[] buttons = gameObject.GetComponentsInChildren<Button>(); 
         TMP_InputField inputField = gameObject.GetComponentInChildren<TMP_InputField>();
-        Image background = buttons[2].GetComponent<Image>();
+        Image background = gameObject.GetComponentInChildren<Image>();
 
         #if UNITY_EDITOR
             if (buttons.Length != 3) { Debug.LogError(layerUIPrefab.name +  " Doesn't contain 3 Buttons"); }

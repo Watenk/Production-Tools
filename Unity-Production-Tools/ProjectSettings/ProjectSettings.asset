@@ -14,7 +14,7 @@ PlayerSettings:
   accelerometerFrequency: 60
   companyName: Watenk
   productName: Watenk-Paint
-  defaultCursor: {fileID: 0}
+  defaultCursor: {fileID: 2800000, guid: 24f2e52cd290e724aad61a9bf5d3e4b7, type: 3}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
   m_ShowUnitySplashScreen: 1
@@ -40,7 +40,7 @@ PlayerSettings:
     width: 1
     height: 1
   m_SplashScreenLogos:
-  - logo: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  - logo: {fileID: 21300000, guid: b0cb61b7bfc41ca4781b7ff99d5f17e3, type: 3}
     duration: 2
   m_VirtualRealitySplashScreen: {fileID: 0}
   m_HolographicTrackingLossScreen: {fileID: 0}
@@ -288,7 +288,7 @@ PlayerSettings:
   - m_BuildTarget: 
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 10906, guid: 0000000000000000f000000000000000, type: 0}
+      m_Icon: {fileID: 2800000, guid: b0cb61b7bfc41ca4781b7ff99d5f17e3, type: 3}
       m_Width: 128
       m_Height: 128
       m_Kind: 0
@@ -734,7 +734,7 @@ PlayerSettings:
   ps4IncludedModules: []
   ps4attribVROutputEnabled: 0
   monoEnv: 
-  splashScreenBackgroundSourceLandscape: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
+  splashScreenBackgroundSourceLandscape: {fileID: 21300000, guid: dbee47a4e58bd1c4ab150992f36e3685, type: 3}
   splashScreenBackgroundSourcePortrait: {fileID: 0}
   blurSplashScreenBackground: 0
   spritePackerPolicy: 

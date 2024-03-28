@@ -23,6 +23,8 @@ public class References : MonoBehaviour
 
     //-------------------------------------------
 
+    public Texture2D MouseTexture;
+
     [Header("Parents")]
     public GameObject Canvas;
     public Transform TabParent;

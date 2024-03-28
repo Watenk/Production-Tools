@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// I know it can be better but it wasn't really a priority
+
 public class InputHandler : IUpdateable
 {
     private Vector2 previousMousePos;

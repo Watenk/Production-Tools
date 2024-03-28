@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 2144347}
   - component: {fileID: 2144346}
   m_Layer: 5
-  m_Name: Selector
+  m_Name: Load
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1102,7 +1102,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.254717, g: 0.254717, b: 0.254717, a: 1}
+  m_Color: {r: 0.13207549, g: 0.13207549, b: 0.13207549, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3045,7 +3045,7 @@ GameObject:
   - component: {fileID: 1491037673}
   - component: {fileID: 1491037672}
   m_Layer: 5
-  m_Name: Brush
+  m_Name: Save
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3241,7 +3241,7 @@ GameObject:
   - component: {fileID: 1589455968}
   - component: {fileID: 1589455967}
   m_Layer: 5
-  m_Name: Color Picker
+  m_Name: Export
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

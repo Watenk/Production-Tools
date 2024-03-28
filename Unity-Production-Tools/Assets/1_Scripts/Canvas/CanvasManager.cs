@@ -9,6 +9,7 @@ public class CanvasManager
     private List<Canvas> canvases = new List<Canvas>();
     private Canvas currentCanvas;
     private Color currentColor = Color.black;
+    private float currentAlpha = 1.0f;
 
     // History
     private ColorHistory colorHistory;
@@ -22,7 +23,8 @@ public class CanvasManager
         EventManager.AddListener(Events.OnLeftMouseUp, OnLeftMouseUp);
 
         // Keyboard Inputs
-        EventManager.AddListener(Events.OnSave, SaveCanvas);
+        EventManager.AddListener(Events.OnSave, () => SaveManager.Save(currentCanvas));
+        EventManager.AddListener(Events.OnExport, () => SaveManager.Export(currentCanvas));
         EventManager.AddListener(Events.OnLoad, LoadCanvas);
         EventManager.AddListener(Events.OnUndo, OnUndo);
         EventManager.AddListener(Events.OnRedo, OnRedo);
@@ -34,6 +36,7 @@ public class CanvasManager
         EventManager.AddListener<Canvas>(Events.OnRemoveCanvasClicked, RemoveCanvas);
         // Color Picker
         EventManager.AddListener<Color>(Events.OnCurrentColorChanged, OnCurrentColorChanged);
+        EventManager.AddListener<float>(Events.OnBrushAlphaChanged, (value) => currentAlpha = value);
         // Layers
         EventManager.AddListener(Events.OnAddLayerClicked, () => currentCanvas?.AddLayer());
         EventManager.AddListener(Events.OnRemoveLayerClicked, () => currentCanvas?.RemoveLayer());
@@ -95,10 +98,6 @@ public class CanvasManager
         SwitchCanvas(loadedCanvas);
     }
 
-    private void SaveCanvas(){
-        SaveManager.Save(currentCanvas);
-    }
-
     private void RemoveCanvas(Canvas canvas){
         canvases.Remove(canvas);
         if (canvases.Count != 0) { SwitchCanvas(canvases[canvases.Count - 1]); }
@@ -115,6 +114,7 @@ public class CanvasManager
     }
 
     private void SetPixel(Vector2Int pos, Color newColor){
+        newColor.a = currentAlpha;
         Color currentColor = currentCanvas.GetPixel(pos);
         if (currentColor == newColor) return;
         currentCanvas.SetPixel(pos, newColor);

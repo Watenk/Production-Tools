@@ -42,6 +42,35 @@ public static class SaveManager
         Debug.Log("Saved " + saveFile.Name + " to " + saveFile.SaveLocation);
     }
 
+    public static void Export(Canvas canvas){
+
+        if (canvas == null) { Debug.LogWarning("Export Failed... Canvas is null"); return; }
+
+        // Generate SaveFile
+        CanvasSaveFile saveFile = new CanvasSaveFile();
+        canvas.SaveTo(ref saveFile);
+
+        if (saveFile.Size == null || saveFile.Size == Vector2Int.zero) { Debug.LogWarning("Export Failed... Size is null"); return; }
+
+        // Get Export Location
+        string exportLocation = StandaloneFileBrowser.SaveFilePanel(saveFile.Name, "", "", "");
+        if (exportLocation == "" || exportLocation == null) { Debug.LogWarning("Export Failed... ExportLocation is null"); return; }
+
+        // Write PNG
+        Texture2D combinedTexture = new Texture2D(canvas.Size.x, canvas.Size.y);
+        foreach (var kvp in saveFile.Layers)
+        {
+            Color[] layerPixels = kvp.Value.Texture.GetPixels();
+            BlendLayer(ref combinedTexture, layerPixels, 0, 0);
+        }
+        combinedTexture.Apply();
+
+        byte[] bytes = combinedTexture.EncodeToPNG();
+        File.WriteAllBytes(exportLocation + ".png", bytes);
+
+        Debug.Log("Exported " + saveFile.Name + " to " + exportLocation + ".png");
+    }
+
     public static Canvas Load(){
 
         // Get SaveLocation
@@ -84,6 +113,17 @@ public static class SaveManager
         Directory.CreateDirectory(saveFile.SaveLocation);
         Directory.CreateDirectory(saveFile.SaveLocation + "/layers");
         saveFile.Name = Path.GetFileName(saveFile.SaveLocation);
+    }
+
+    private static void BlendLayer(ref Texture2D combinedTexture, Color[] layerPixels, int xOffset, int yOffset)
+    {
+        Color[] combinedPixels = combinedTexture.GetPixels(xOffset, yOffset, combinedTexture.width, combinedTexture.height);
+        
+        for (int i = 0; i < combinedPixels.Length; i++){
+            combinedPixels[i] = Color.Lerp(combinedPixels[i], layerPixels[i], layerPixels[i].a);
+        }
+
+        combinedTexture.SetPixels(xOffset, yOffset, combinedTexture.width, combinedTexture.height, combinedPixels);
     }
 }
 

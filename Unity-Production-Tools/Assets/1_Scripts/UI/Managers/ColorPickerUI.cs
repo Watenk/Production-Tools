@@ -10,6 +10,7 @@ public class ColorPickerUI
     private RectTransform colorPickerInputField;
     private RectTransform colorPickerHandle;
     private Slider hueSlider;
+    private Slider alphaSlider;
     private RawImage inputFieldImage;
     private RawImage hueSliderBackground;
     private Image currentColorImage;
@@ -21,6 +22,7 @@ public class ColorPickerUI
         colorPickerInputField = References.Instance.ColorPickerInputField;
         colorPickerHandle = References.Instance.ColorPickerInputHandle;
         hueSlider = References.Instance.ColorPickerInputHueSlider;
+        alphaSlider = References.Instance.ColorPickerAlphaSlider;
         currentColorImage = References.Instance.ColorPickerCurrentColor;
         hueSliderBackground = References.Instance.ColorPickerHueSliderBackground;
         inputFieldImage = colorPickerInputField.gameObject.GetComponent<RawImage>();
@@ -33,6 +35,7 @@ public class ColorPickerUI
         EventManager.AddListener(Events.OnLeftMouse, OnLeftMouse);
         EventManager.AddListener(Events.OnLeftMouseDown, OnLeftMouseDown);
         hueSlider.onValueChanged.AddListener(OnHueChanged);
+        alphaSlider.onValueChanged.AddListener((value) => EventManager.Invoke(Events.OnBrushAlphaChanged, value / 100));
         
         inputFieldImage.material = new Material(Resources.Load<Shader>("UnlitTransparent"));
         hueSliderBackground.texture = GenerateHueTexture(new Vector2Int(100, 100));

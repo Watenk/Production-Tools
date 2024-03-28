@@ -16,6 +16,7 @@ public enum Events
     OnMouseScroll,
     OnMousePosChange,
     OnSave,
+    OnExport,
     OnLoad,
     OnUndo,
     OnRedo,
@@ -38,6 +39,7 @@ public enum Events
     OnRemoveCanvasClicked,
     // Color Picker
     OnCurrentColorChanged,
+    OnBrushAlphaChanged,
     // Layers
     OnAddLayerClicked,
     OnRemoveLayerClicked,

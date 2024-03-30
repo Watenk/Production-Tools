@@ -40,8 +40,7 @@ public class CanvasManager
         // Layers
         EventManager.AddListener(Events.OnAddLayerClicked, () => currentCanvas?.AddLayer(new Color(1.0f, 1.0f, 1.0f, 0.0f)));
         EventManager.AddListener(Events.OnRemoveLayerClicked, () => currentCanvas?.RemoveLayer());
-        //EventManager.AddListener<Layer>(Events.OnLayerVisiblityClicked, (layer) => currentCanvas?.SwitchLayer(layer));
-        //EventManager.AddListener<Layer>(Events.OnLayerLockClicked, (layer) => currentCanvas?.SwitchLayer(layer));
+        EventManager.AddListener<Layer>(Events.OnLayerVisiblityClicked, (layer) => OnVisableLayer(layer));
         EventManager.AddListener<Layer>(Events.OnLayerSelectClicked, (layerUITab) => currentCanvas?.SwitchLayer(layerUITab));
     }
 
@@ -61,6 +60,15 @@ public class CanvasManager
         Vector3 camPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector2Int pos = new Vector2Int((int)camPos.x, currentCanvas.Size.y - (int)camPos.y - 1);
         SetPixel(pos, currentColor);
+    }
+
+    private void OnVisableLayer(Layer layer){
+        if (layer.Visable){
+            layer.Visability(false);
+        }
+        else{
+            layer.Visability(true);
+        }
     }
 
     private void OnLeftMouseUp(){

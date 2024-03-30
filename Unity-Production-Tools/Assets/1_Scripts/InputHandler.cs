@@ -8,11 +8,17 @@ using UnityEngine;
 public class InputHandler : IUpdateable
 {
     private Vector2 previousMousePos;
+    private bool updateInputs = true;
 
     //--------------------------------------------------------
 
+    public InputHandler(){
+        EventManager.AddListener(Events.OnStopInputs, () => updateInputs = false);
+        EventManager.AddListener(Events.OnResumeInputs, () => updateInputs = true);
+    }
+
     public void OnUpdate(){
-        MouseInputs();
+        if (updateInputs) MouseInputs();
     }
 
     //---------------------------------------------------------

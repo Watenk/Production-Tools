@@ -20,6 +20,8 @@ public enum Events
     OnLoad,
     OnUndo,
     OnRedo,
+    OnStopInputs,
+    OnResumeInputs,
 
     // Canvas
     OnNewCanvas,
@@ -29,8 +31,7 @@ public enum Events
     // Layers
     OnNewLayer,
     OnRemoveLayer,
-    OnLayerSwitchBackgroundToBlue,
-    OnLayerSwitchBackgroundToWhite,
+    OnLayerChangeColor,
 
     // UI
     // Canvas
@@ -47,7 +48,6 @@ public enum Events
     OnDemoteLayerClicked,
     OnLayerAlphaChanged,
     OnLayerVisiblityClicked,
-    OnLayerLockClicked,
     OnLayerSelectClicked,
     OnCanvasNull,
 }

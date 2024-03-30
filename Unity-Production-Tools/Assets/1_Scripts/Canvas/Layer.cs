@@ -11,6 +11,7 @@ public class Layer
     [SerializeField] public int Index { get; private set; }
     [SerializeField] public Texture2D Texture { get; private set; }
     [SerializeField] public string Name { get; private set; }
+    public bool Visable { get; private set; }
 
     public GameObject GameObject;
     private List<ColorPos> updatedPixels = new List<ColorPos>();
@@ -91,6 +92,17 @@ public class Layer
 
     public void SetName(string newName){
         Name = newName;
+    }
+
+    public void Visability(bool value){
+        Visable = value;
+
+        if (value){
+            GameObject.SetActive(true);
+        }
+        else{
+            GameObject.SetActive(false);
+        }
     }
 
     //---------------------------------------------

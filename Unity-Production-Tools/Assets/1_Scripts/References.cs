@@ -25,6 +25,11 @@ public class References : MonoBehaviour
 
     public Texture2D MouseTexture;
 
+    [Header("Tools")]
+    public Button SaveButton;
+    public Button ExportButton;
+    public Button LoadButton;
+
     [Header("Parents")]
     public GameObject Canvas;
     public Transform TabParent;

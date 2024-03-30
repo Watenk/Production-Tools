@@ -91,7 +91,13 @@ public static class SaveManager
             Texture2D texture = new Texture2D(saveFile.Size.x, saveFile.Size.y);
             byte[] layerData = File.ReadAllBytes(savePath + "/layers/" + i + ".png");
             texture.LoadImage(layerData);
-            saveFile.Layers.Add(i, new Layer(saveFile.LayerNames[i], i, saveFile.Size, texture));
+
+            if (saveFile.LayerNames.Count == 0){
+                saveFile.Layers.Add(i, new Layer("OldSaveFile", i, saveFile.Size, texture));
+            }
+            else{
+                saveFile.Layers.Add(i, new Layer(saveFile.LayerNames[i], i, saveFile.Size, texture));
+            }
         }
 
         Debug.Log("Loaded " + saveFile.Name + " from " + savePath);

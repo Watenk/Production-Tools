@@ -40,7 +40,7 @@ public class Canvas
         foreach (var current in layers){
             current.Value.Delete();
         }
-        GameObject.Destroy(background.GameObject);
+        if (background != null) GameObject.Destroy(background.GameObject);
     }
 
     public void SaveTo(ref CanvasSaveFile saveFile){
@@ -94,20 +94,20 @@ public class Canvas
     }
 
     public void SwitchLayer(Layer layer){
-        if (CurrentLayer != null) EventManager.Invoke(Events.OnLayerSwitchBackgroundToWhite, CurrentLayer);
-        EventManager.Invoke(Events.OnLayerSwitchBackgroundToBlue, layer);
+        if (CurrentLayer != null) EventManager.Invoke(Events.OnLayerChangeColor, CurrentLayer, Color.white);
+        EventManager.Invoke(Events.OnLayerChangeColor, layer, new Color(140f / 255f, 154f / 255f, 176f / 255f));
         CurrentLayer = layer;
     }
 
     public void PromoteLayer(Layer layer){
+        if (layers.Count == 1) return;
         if (layer.Index == layers.Count - 1) return;
 
-        
     }
 
     public void DemoteLayer(Layer layer){
+        if (layers.Count == 1) return;
         if (layer.Index == 0) return;
-
 
     }
 

@@ -31,6 +31,7 @@ public class GameManager : MonoBehaviour
         AddService(new TabUI());
         AddService(new ColorPickerUI());
         AddService(new LayerUI());
+        AddService(new ToolUI());
     }
 
     public void Update(){

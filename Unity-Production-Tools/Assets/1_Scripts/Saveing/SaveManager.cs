@@ -26,7 +26,7 @@ public static class SaveManager
             GenerateSaveDirFor(saveFile);
         }
 
-        // Write Data Json
+        // Write Data Json 
         StreamWriter writer = new StreamWriter(saveFile.SaveLocation + "/data.txt", false);
         writer.WriteLine(JsonUtility.ToJson(saveFile, true));
         writer.Close();
@@ -91,7 +91,7 @@ public static class SaveManager
             Texture2D texture = new Texture2D(saveFile.Size.x, saveFile.Size.y);
             byte[] layerData = File.ReadAllBytes(savePath + "/layers/" + i + ".png");
             texture.LoadImage(layerData);
-            saveFile.Layers.Add(i, new Layer("LoadingTempName", i, saveFile.Size, texture));
+            saveFile.Layers.Add(i, new Layer(saveFile.LayerNames[i], i, saveFile.Size, texture));
         }
 
         Debug.Log("Loaded " + saveFile.Name + " from " + savePath);

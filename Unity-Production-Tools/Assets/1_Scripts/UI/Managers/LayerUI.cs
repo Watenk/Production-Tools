@@ -20,12 +20,11 @@ public class LayerUI
         References.Instance.RemoveLayerButton.onClick.AddListener(() => EventManager.Invoke(Events.OnRemoveLayerClicked));
         References.Instance.PromoteLayerButton.onClick.AddListener(() => EventManager.Invoke(Events.OnPromoteLayerClicked));
         References.Instance.DemoteLayerButton.onClick.AddListener(() => EventManager.Invoke(Events.OnDemoteLayerClicked));
-        References.Instance.LayerAlphaSlider.onValueChanged.AddListener((newValue) => EventManager.Invoke(Events.OnLayerAlphaChanged, newValue));
 
         EventManager.AddListener<Layer>(Events.OnNewLayer, AddLayerUI);
         EventManager.AddListener<Layer>(Events.OnRemoveLayer, RemoveLayerUI);
         EventManager.AddListener<Layer>(Events.OnLayerSwitchBackgroundToWhite, OnLayerSwitchBackgroundToWhite);
-        EventManager.AddListener<Layer>(Events.OnLayerSwitchBackgroundToGray, OnLayerSwitchBackgroundToGray);
+        EventManager.AddListener<Layer>(Events.OnLayerSwitchBackgroundToBlue, OnLayerSwitchBackgroundToBlue);
         EventManager.AddListener<Canvas>(Events.OnSwitchTab, OnSwitchTab);
         EventManager.AddListener(Events.OnCanvasNull, () => ClearLayers());
     }
@@ -35,7 +34,7 @@ public class LayerUI
     private void OnSwitchTab(Canvas canvas){
         ClearLayers();
         AddLayers(canvas);
-        OnLayerSwitchBackgroundToGray(canvas.CurrentLayer);
+        OnLayerSwitchBackgroundToBlue(canvas.CurrentLayer);
     }
 
     private void AddLayerUI(Layer layer){
@@ -51,9 +50,11 @@ public class LayerUI
             if (background == null) { Debug.LogError(layerUIPrefab.name + " Doesn't contain a background Image"); }
         #endif
 
+        inputField.text = layer.Name;
         LayerUITab layerUITab = new LayerUITab(gameObject, layer, inputField, background);
         layerUITabs.Add(layerUITab);
 
+        inputField.onValueChanged.AddListener((newName) => layerUITab.Layer.SetName(newName));
         buttons[0].onClick.AddListener(() => EventManager.Invoke(Events.OnLayerVisiblityClicked, layer));
         buttons[1].onClick.AddListener(() => EventManager.Invoke(Events.OnLayerLockClicked, layer));
         buttons[2].onClick.AddListener(() => EventManager.Invoke(Events.OnLayerSelectClicked, layer));
@@ -85,8 +86,8 @@ public class LayerUI
         layerUITab.Background.color = Color.white;
     }
 
-    private void OnLayerSwitchBackgroundToGray(Layer layer){
+    private void OnLayerSwitchBackgroundToBlue(Layer layer){
         LayerUITab layerUITab = layerUITabs.Find((currentUITab) => currentUITab.Layer == layer);
-        layerUITab.Background.color = Color.gray;
+        layerUITab.Background.color = new Color(140f / 255f, 154f / 255f, 176f / 255f);
     }
 }

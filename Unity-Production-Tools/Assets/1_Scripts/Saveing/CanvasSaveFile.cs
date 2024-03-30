@@ -11,4 +11,5 @@ public struct CanvasSaveFile
     public Vector2Int Size;
     public Dictionary<int, Layer> Layers;
     public int LayerCount;
+    public List<string> LayerNames;
 }

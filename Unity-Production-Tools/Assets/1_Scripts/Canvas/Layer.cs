@@ -10,7 +10,7 @@ public class Layer
     // Data
     [SerializeField] public int Index { get; private set; }
     [SerializeField] public Texture2D Texture { get; private set; }
-    [SerializeField] private string name;
+    [SerializeField] public string Name { get; private set; }
 
     public GameObject GameObject;
     private List<ColorPos> updatedPixels = new List<ColorPos>();
@@ -20,7 +20,7 @@ public class Layer
 
     public Layer(string name, int index, Vector2Int canvasSize, Color background){
 
-        this.name = name;
+        this.Name = name;
         this.Index = index;
         this.canvasSize = canvasSize;
 
@@ -29,7 +29,7 @@ public class Layer
             filterMode = FilterMode.Point,
         };
 
-        GenerateQuad(name);
+        GenerateQuad();
 
         for (int y = 0; y < canvasSize.y; y++){
             for (int x = 0; x < canvasSize.x; x++){
@@ -43,14 +43,14 @@ public class Layer
     // load Layer From Save
     public Layer(string name, int index, Vector2Int canvasSize, Texture2D texture){
 
-        this.name = name;
+        this.Name = name;
         this.Index = index;
         this.canvasSize = canvasSize;
 
         Texture = texture;
         Texture.filterMode = FilterMode.Point;
         
-        GenerateQuad(name);
+        GenerateQuad();
         EventManager.Invoke(Events.OnNewLayer, this);
     }
 
@@ -89,6 +89,10 @@ public class Layer
         Index = newIndex;
     }
 
+    public void SetName(string newName){
+        Name = newName;
+    }
+
     //---------------------------------------------
 
     private void UpdateTexture(){
@@ -103,10 +107,10 @@ public class Layer
         Texture.Apply();
     }
 
-    private void GenerateQuad(string name){
+    private void GenerateQuad(){
 
         // GameObject
-        GameObject = new GameObject(name);
+        GameObject = new GameObject("LayerGameObject");
         GameObject.transform.SetParent(GameManager.Instance.gameObject.transform);
         GameObject.transform.position = new Vector3(0, 0, -Index);
         GameObject.isStatic = true;

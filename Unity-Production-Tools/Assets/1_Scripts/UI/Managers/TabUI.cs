@@ -62,21 +62,20 @@ public class TabUI
     // Tab Events
 
     private void OnTabClicked(CanvasTab canvasTab){
-        EventManager.Invoke(Events.OnSwitchCanvasClicked, canvasTab.GetCanvas());
+        EventManager.Invoke(Events.OnSwitchCanvasClicked, canvasTab.Canvas);
     }
 
     private void OnTabDeleteClicked(CanvasTab canvasTab){
         canvasTabs.Remove(canvasTab);
         GameObject.Destroy(canvasTab.RectTransform.gameObject);
         CalcTabsSizes();
-        EventManager.Invoke(Events.OnRemoveCanvasClicked, canvasTab.GetCanvas());
+        EventManager.Invoke(Events.OnRemoveCanvasClicked, canvasTab.Canvas);
     }
 
     //---------------------------------------------------
 
     private void AddTab(Canvas canvas){
-        CanvasTab canvasTab = CreateCanvasTab();
-        canvasTab.SetCanvas(canvas);
+        CanvasTab canvasTab = CreateCanvasTab(canvas);
         canvasTab.SelectButton.onClick.AddListener(() => OnTabClicked(canvasTab));
         canvasTab.DeleteButton.onClick.AddListener(() => OnTabDeleteClicked(canvasTab));
         
@@ -91,8 +90,8 @@ public class TabUI
             current.SelectButton.image.color = Color.white;
         }
 
-        CanvasTab canvasTab = canvasTabs.Find(listCanvas => listCanvas.GetCanvas() == canvas);
-        canvasTab.SelectButton.image.color = Color.gray;
+        CanvasTab canvasTab = canvasTabs.Find(listCanvas => listCanvas.Canvas == canvas);
+        canvasTab.SelectButton.image.color = new Color(140f / 255f, 154f / 255f, 176f / 255f);
     }
 
     private void CalcTabsSizes(){
@@ -112,19 +111,21 @@ public class TabUI
     //-----------------------------------------------------------
     // Factory's
 
-    private CanvasTab CreateCanvasTab(){
+    private CanvasTab CreateCanvasTab(Canvas canvas){
         GameObject gameObject = GameObject.Instantiate(tabPrefab, References.Instance.TabParent.transform);
         RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
         Button[] buttons = gameObject.GetComponentsInChildren<Button>(); 
-        TextMeshProUGUI text = gameObject.GetComponentInChildren<TextMeshProUGUI>();
+        TMP_InputField inputField = gameObject.GetComponentInChildren<TMP_InputField>();
 
         #if UNITY_EDITOR
             if (rectTransform == null) { Debug.LogError(tabPrefab.name + " Doesn't contain a rectTransform"); }
             if (buttons.Length != 2) { Debug.LogError(tabPrefab.name +  " Doesn't contain 2 Buttons"); }
-            if (text == null) { Debug.LogError(tabPrefab.name + " Doesn't contain a TextMeshPro"); }
+            if (inputField == null) { Debug.LogError(tabPrefab.name + " Doesn't contain a TMP_InputField"); }
         #endif
 
-        CanvasTab newCanvasTab = new CanvasTab(rectTransform, buttons[0], buttons[1], text);
+        inputField.text = canvas.Name;
+        CanvasTab newCanvasTab = new CanvasTab(canvas, rectTransform, buttons[0], buttons[1], inputField);
+        inputField.onValueChanged.AddListener((newName) => newCanvasTab.Canvas.SetName(newName));
         canvasTabs.Add(newCanvasTab);
         return newCanvasTab;
     }

@@ -7,26 +7,19 @@ using UnityEngine.UI;
 
 public class CanvasTab
 {
+    public Canvas Canvas { get; private set; }
     public RectTransform RectTransform;
     public Button SelectButton;
     public Button DeleteButton;
-    public TextMeshProUGUI Text;
-    private Canvas canvas;
+    public TMP_InputField InputField;
 
     //---------------------------------
 
-    public CanvasTab(RectTransform rectTransform, Button selectButton, Button deleteButton, TextMeshProUGUI text){
+    public CanvasTab(Canvas canvas, RectTransform rectTransform, Button selectButton, Button deleteButton, TMP_InputField text){
+        Canvas = canvas;
         RectTransform = rectTransform;
         SelectButton = selectButton;
         DeleteButton = deleteButton;
-        Text = text;
-    }
-
-    public void SetCanvas(Canvas canvas){
-        this.canvas = canvas;
-    }
-
-    public Canvas GetCanvas(){
-        return canvas;
+        InputField = text;
     }
 }

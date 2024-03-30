@@ -7,7 +7,7 @@ using UnityEngine;
 
 public static class EventManager
 {
-    private static Dictionary<Type, object> eventManagers = new Dictionary<Type, object>();
+    private static Dictionary<EventManagerKey, object> eventManagers = new Dictionary<EventManagerKey, object>();
 
     //--------------------------------------------------
 
@@ -26,13 +26,14 @@ public static class EventManager
 
     private static EventManagerNoParameter Get(){
         Type type = typeof(EventManagerNoParameter);
+        EventManagerKey key = new EventManagerKey(type);
 
-        if (eventManagers.ContainsKey(type)){
-            return eventManagers[type] as EventManagerNoParameter;
+        if (eventManagers.ContainsKey(key)){
+            return eventManagers[key] as EventManagerNoParameter;
         }
         else{
             EventManagerNoParameter newEventManager = new EventManagerNoParameter();
-            eventManagers.Add(type, newEventManager);
+            eventManagers.Add(key, newEventManager);
             return newEventManager;
         }
     }
@@ -52,13 +53,14 @@ public static class EventManager
 
     private static EventManagerOneParameter<T> Get<T>(){
         Type type = typeof(T);
+        EventManagerKey key = new EventManagerKey(type);
 
-        if (eventManagers.ContainsKey(type)){
-            return eventManagers[type] as EventManagerOneParameter<T>;
+        if (eventManagers.ContainsKey(key)){
+            return eventManagers[key] as EventManagerOneParameter<T>;
         }
         else{
             EventManagerOneParameter<T> newEventManager = new EventManagerOneParameter<T>();
-            eventManagers.Add(type, newEventManager);
+            eventManagers.Add(key, newEventManager);
             return newEventManager;
         }
     }
@@ -77,15 +79,67 @@ public static class EventManager
     }
 
     private static EventManagerTwoParameters<T, U> Get<T, U>(){
-        Type type = typeof(T);
+        Type type1 = typeof(T);
+        Type type2 = typeof(U);
+        EventManagerKey key = new EventManagerKey(type1, type2);
 
-        if (eventManagers.ContainsKey(type)){
-            return eventManagers[type] as EventManagerTwoParameters<T, U>;
+        if (eventManagers.ContainsKey(key)){
+            return eventManagers[key] as EventManagerTwoParameters<T, U>;
         }
         else{
             EventManagerTwoParameters<T, U> newEventManager = new EventManagerTwoParameters<T, U>();
-            eventManagers.Add(type, newEventManager);
+            eventManagers.Add(key, newEventManager);
             return newEventManager;
+        }
+    }
+}
+
+public class EventManagerKey{
+    public Type type1;
+    public Type type2;
+
+    //-------------------------
+
+    public EventManagerKey(Type type1){
+        this.type1 = type1;
+        this.type2 = null;
+    }
+
+    public EventManagerKey(Type type1, Type type2){
+        this.type1 = type1;
+        this.type2 = type2;
+    }
+
+    public override bool Equals(object obj){
+        if (obj == null || GetType() != obj.GetType()){
+            return false;
+        }
+
+        EventManagerKey other = (EventManagerKey)obj;
+
+        if (type1 != other.type1){
+            return false;
+        }
+
+        if (type2 != null){
+            return type2.Equals(other.type2);
+        }
+
+        if (other.type2 != null){
+            return false;
+        }
+
+        return true;
+    }
+
+    public override int GetHashCode(){
+        unchecked{
+            int hash = 17;
+            hash = hash * 23 + type1.GetHashCode();
+            if (type2 != null){
+                hash = hash * 23 + type2.GetHashCode();
+            }
+            return hash;
         }
     }
 }

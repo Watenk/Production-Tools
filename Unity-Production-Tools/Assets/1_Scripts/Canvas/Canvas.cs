@@ -8,10 +8,10 @@ public class Canvas
     public Vector2Int Size { get; private set; }
     public HistoryManager HistoryManager { get; private set; }
     public Layer CurrentLayer { get; private set; }
+    public string Name { get; private set; }
 
     // CanvasData
     private string saveLocation;
-    private string name;
     private Dictionary<int, Layer> layers = new Dictionary<int, Layer>();
     private Layer background;
     
@@ -28,10 +28,11 @@ public class Canvas
 
     // Load Canvas from Save
     public Canvas(CanvasSaveFile saveFile){
-        name = saveFile.Name;
+        Name = saveFile.Name;
         Size = saveFile.Size;
         layers = saveFile.Layers;
         saveLocation = saveFile.SaveLocation;
+        HistoryManager = new HistoryManager();
         SwitchLayer(saveFile.Layers[0]);
     }
 
@@ -43,11 +44,16 @@ public class Canvas
     }
 
     public void SaveTo(ref CanvasSaveFile saveFile){
-        saveFile.Name = name;
+        saveFile.Name = Name;
         saveFile.Size = Size;
         saveFile.Layers = layers;
         saveFile.LayerCount = layers.Count;
         saveFile.SaveLocation = saveLocation;
+        List<string> layerNames = new List<string>();
+        foreach (Layer current in layers.Values){
+            layerNames.Add(current.Name);
+        }
+        saveFile.LayerNames = layerNames;
     }
 
     public Layer AddLayer(Color color){
@@ -89,7 +95,7 @@ public class Canvas
 
     public void SwitchLayer(Layer layer){
         if (CurrentLayer != null) EventManager.Invoke(Events.OnLayerSwitchBackgroundToWhite, CurrentLayer);
-        EventManager.Invoke(Events.OnLayerSwitchBackgroundToGray, layer);
+        EventManager.Invoke(Events.OnLayerSwitchBackgroundToBlue, layer);
         CurrentLayer = layer;
     }
 
@@ -119,6 +125,10 @@ public class Canvas
         foreach (var current in layers){
             current.Value.SetActive(value);
         }
+    }
+
+    public void SetName(string newName){
+        Name = newName;
     }
 
     //----------------------------------

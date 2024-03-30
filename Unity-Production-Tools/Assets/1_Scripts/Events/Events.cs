@@ -29,7 +29,7 @@ public enum Events
     // Layers
     OnNewLayer,
     OnRemoveLayer,
-    OnLayerSwitchBackgroundToGray,
+    OnLayerSwitchBackgroundToBlue,
     OnLayerSwitchBackgroundToWhite,
 
     // UI
